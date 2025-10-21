@@ -19,21 +19,158 @@ st.title("AI Form Agent")
 
 uploaded_file = st.file_uploader("Upload a PDF form", type=["pdf"])
 
-def extract_text_from_bytes(b):
-    """Use pdfplumber to extract visible text."""
-    text = ""
+def process_button_field(obj):
+    """Process a button field and return if it's checked and its display name."""
     try:
+        # Get the field type
+        field_type = obj.get('/FT', '')
+        if field_type != '/Btn':
+            return False, None
+            
+        # Get all possible values and states
+        field_value = obj.get('/V', '')  # Value
+        field_state = obj.get('/AS', '')  # Appearance state
+        field_name = obj.get('/T', '')    # Technical name
+        field_title = obj.get('/TU', '')  # User-friendly title
+        
+        # Check if button is selected/checked
+        is_checked = any([
+            field_value == '/On',
+            field_value == 'Yes',
+            field_value == 'Checked',
+            field_state == '/Yes',
+            field_state == '/On'
+        ])
+        
+        # If not obviously checked, try other methods
+        if not is_checked:
+            # Check appearance dictionary
+            ap_dict = obj.get('/AP', {})
+            if hasattr(ap_dict, 'get'):
+                n_dict = ap_dict.get('/N', {})
+                if hasattr(n_dict, 'keys'):
+                    # Any key other than /Off might indicate checked state
+                    other_keys = [k for k in n_dict.keys() if k != '/Off']
+                    if other_keys and field_value in other_keys:
+                        is_checked = True
+        
+        # Still not checked? Look at raw values
+        if not is_checked and field_value:
+            clean_value = field_value[1:] if field_value.startswith('/') else field_value
+            if clean_value.lower() not in ['off', 'no', 'false', '0', 'null', '']:
+                is_checked = True
+                
+        if not is_checked:
+            return False, None
+            
+        # Get the display name for the checked button
+        display_name = None
+        
+        # First try to get parent name (for grouped buttons)
+        if '/Parent' in obj:
+            try:
+                parent = obj['/Parent']
+                if hasattr(parent, 'get_object'):
+                    parent = parent.get_object()
+                if hasattr(parent, 'get'):
+                    parent_title = parent.get('/TU', '')
+                    parent_name = parent.get('/T', '')
+                    if parent_title or parent_name:
+                        display_name = parent_title or parent_name
+            except:
+                pass
+                
+        # No parent name? Use field's own name
+        if not display_name:
+            display_name = field_title or field_name
+            
+        # Clean up the name
+        if display_name:
+            display_name = display_name.split('_')[0].split('.')[0]
+            
+            # Handle special cases
+            name_lower = display_name.lower()
+            if any(yes in name_lower for yes in ['ja', 'yes', 'oui']):
+                display_name = 'ja'
+            elif any(no in name_lower for no in ['nein', 'no', 'non']):
+                display_name = 'nein'
+                
+        if not display_name:
+            display_name = "checked"
+            
+        return True, display_name
+        
+    except Exception as e:
+        st.write(f"Error processing button: {str(e)}")
+        st.write("Button data:", obj)
+        return False, None
+
+def extract_text_from_bytes(b):
+    """Use pdfplumber to extract visible text and form field values."""
+    text = ""
+    checked_values = []
+    
+    try:
+        # First get the checked button values
+        reader = PdfReader(io.BytesIO(b))
+        for page in reader.pages:
+            try:
+                annots = page.get('/Annots', [])
+                for annot in annots:
+                    field = annot.get_object()
+                    is_checked, name = process_button_field(field)
+                    if is_checked and name:
+                        checked_values.append(name)
+            except Exception as e:
+                st.write(f"Error processing page annotations: {str(e)}")
+                
+        # Then get the regular text
         with pdfplumber.open(io.BytesIO(b)) as pdf:
             for page in pdf.pages:
                 text += page.extract_text() or ""
-    except Exception:
-        # pdfplumber may fail for some PDFs; return empty string on error
+                
+        # Add checked values to the text
+        if checked_values:
+            text += "\n\nChecked Fields:\n"
+            text += "\n".join(f"- {value}" for value in checked_values)
+            
+    except Exception as e:
+        st.write(f"Error in text extraction: {str(e)}")
         text = ""
+        
     return text
+
+def get_button_info(obj):
+    """Extract detailed information from a button field."""
+    try:
+        if obj.get('/FT') != '/Btn':
+            return None
+            
+        info = {
+            'name': obj.get('/T', ''),        # Technical name
+            'title': obj.get('/TU', ''),      # Display name/title
+            'value': obj.get('/V', ''),       # Current value
+            'states': obj.get('/_States_', []),  # Possible states
+            'parent': None
+        }
+        
+        # Try to get parent info
+        if '/Parent' in obj:
+            parent = obj['/Parent']
+            if hasattr(parent, 'get_object'):
+                parent = parent.get_object()
+            if hasattr(parent, 'get'):
+                info['parent'] = {
+                    'name': parent.get('/T', ''),
+                    'title': parent.get('/TU', '')
+                }
+                
+        return info
+    except Exception:
+        return None
 
 def extract_form_fields_from_bytes(b):
     """Try multiple strategies to extract PDF form (AcroForm) fields and widget annotation values.
-
     Returns a dict: {field_name: value}
     """
     if PdfReader is None:
@@ -69,6 +206,28 @@ def extract_form_fields_from_bytes(b):
     except Exception:
         pass
 
+    def process_button_field(obj):
+        """Process a button field and return its name and value."""
+        try:
+            # Get the field type
+            field_type = obj.get('/FT', '')
+            if field_type != '/Btn':
+                return None, None
+                
+            # Get field name and display name
+            field_name = obj.get('/T', '')  # Original field name
+            display_name = obj.get('/TU', '') or field_name.split('_')[0]
+            
+            # Get the value
+            value = obj.get('/V', '')
+            actual_value = display_name if value == '/On' else ''
+            
+            return field_name, actual_value
+            
+        except Exception as e:
+            st.write(f"Error processing button: {str(e)}")
+            return None, None
+            
     def extract_checkbox_label(page, rect, margin=20):
         """Extract text near a checkbox to get its label."""
         try:
@@ -86,19 +245,69 @@ def extract_form_fields_from_bytes(b):
         except Exception as e:
             return f"Error: {e}"
 
-    def _normalize_val(v, field_type=None, states=None, field_dict=None, label=None):
-        """Normalize PDF field values to python primitives (bool if checkbox-like)."""
-        # For debugging
-        debug = {}
-        debug['raw_value'] = str(v)
-        debug['field_type'] = str(field_type)
-        debug['states'] = str(states)
-        debug['label'] = label
+    def extract_button_values(fields):
+        """Extract checked button values from form fields."""
+        checked_fields = []
         
-        # Handle button/checkbox fields specially
-        is_button = field_type and str(field_type).lower().find('btn') != -1
-        if not is_button:
-            return str(v) if v is not None else ""
+        for field_name, field_data in fields.items():
+            try:
+                # Check if it's a button field
+                if '/FT' in field_data and field_data['/FT'] == '/Btn':
+                    # Check if the value is /On
+                    if '/V' in field_data and field_data['/V'] == '/On':
+                        # Get the field name without any suffix numbers
+                        base_name = field_data.get('/TU', '') or field_name.split('_')[0]
+                        checked_fields.append(base_name)
+                        
+                        # Debug output
+                        st.write(f"Found checked button:")
+                        st.write(f"Name: {field_name}")
+                        st.write(f"Base name: {base_name}")
+                        st.write(f"Full data: {field_data}")
+            except Exception as e:
+                st.write(f"Error processing field {field_name}: {str(e)}")
+                continue
+                
+        return checked_fields
+
+    def _normalize_val(v, field_type=None, states=None, field_dict=None, label=None):
+        """Normalize PDF field values to python primitives."""
+        # Handle button fields
+        if str(field_type).find('/Btn') != -1:
+            # Get the button value
+            value = field_dict.get('/V', '')
+            
+            # If it's not checked, return empty string
+            if value != '/On':
+                return ""
+                
+            # Get the field name and parent info
+            field_name = field_dict.get('/T', '')  # Technical name
+            field_title = field_dict.get('/TU', '')  # Display name/title
+            parent_name = field_dict.get('/Parent', {})
+            if hasattr(parent_name, 'get'):
+                parent_name = parent_name.get('/T', '')
+            
+            # First try to get value from TU (this is usually the most accurate)
+            if field_title:
+                return field_title
+                
+            # If no TU, try to clean up the technical name
+            if field_name:
+                # Remove common suffixes
+                clean_name = field_name.split('_')[0]
+                # Special case for ja/nein
+                name_lower = field_name.lower()
+                if 'ja' in name_lower:
+                    return 'ja'
+                elif 'nein' in name_lower:
+                    return 'nein'
+                return clean_name
+                
+            return "checked"
+            
+        # For non-button fields, return as is
+        return str(v) if v is not None else ""
             
         # For checkboxes (type Btn), default to unchecked
         if v is None:
@@ -185,54 +394,83 @@ def extract_form_fields_from_bytes(b):
         st.write(f"DEBUG: {debug}")
         return is_checked
 
-    # Strategy 2: get_fields() - PyPDF2 style
+    # Strategy 2: Process all fields with improved accuracy
     try:
         if hasattr(reader, "get_fields"):
+            # First collect all button fields by their grouping
+            button_groups = {}
+            
+            # Scan all pages for buttons
+            for page in reader.pages:
+                try:
+                    annots = page.get('/Annots', [])
+                    for annot in annots:
+                        field = annot.get_object()
+                        button_info = get_button_info(field)
+                        
+                        if not button_info:
+                            continue
+                            
+                        # Determine the group key for this button
+                        group_key = None
+                        
+                        # Try to get group from parent first
+                        if button_info['parent'] and button_info['parent']['title']:
+                            group_key = button_info['parent']['title']
+                        # Then try the button's own title
+                        elif button_info['title']:
+                            # For ja/nein groups, use the base name
+                            base_name = button_info['title'].split('_')[0]
+                            if 'ja' in button_info['name'].lower() or 'nein' in button_info['name'].lower():
+                                group_key = base_name
+                            else:
+                                group_key = button_info['title']
+                        # Finally use the technical name base
+                        else:
+                            group_key = button_info['name'].split('_')[0]
+                            
+                        # Store button in its group
+                        if group_key not in button_groups:
+                            button_groups[group_key] = []
+                        button_groups[group_key].append(button_info)
+                        
+                except Exception as e:
+                    st.write(f"Error processing page annotations: {str(e)}")
+                    continue
+                    
+            # Now process each group to find checked values
+            for group_name, buttons in button_groups.items():
+                checked_value = None
+                for button in buttons:
+                    if button['value'] == '/On':
+                        # For ja/nein buttons
+                        btn_name = button['name'].lower()
+                        if 'ja' in btn_name:
+                            checked_value = 'ja'
+                        elif 'nein' in btn_name:
+                            checked_value = 'nein'
+                        # For other buttons
+                        else:
+                            checked_value = button['title'] or button['name'].split('_')[0]
+                            
+                if checked_value:
+                    fields[group_name] = checked_value
+                    
+            # Process non-button fields
             raw = reader.get_fields() or {}
             for k, v in raw.items():
-                # v might be a dictionary or a primitive
                 if isinstance(v, dict):
-                    # common keys for value: '/V' or 'V' or 'value'
-                    # Get field value and type
-                    val = v.get('/V') or v.get('V') or v.get('value') or v.get('/AS') or v.get('AS') or None
                     field_type = v.get('/FT') or v.get('FT')
-                    states = v.get('/_States_')
-                    
-                    # For checkboxes/buttons, try to get the associated label text
-                    label = None
-                    if str(field_type).find('/Btn') != -1:
-                        try:
-                            # Get field's rectangle
-                            rect = v.get('/Rect')
-                            if rect:
-                                # Find the page this field is on
-                                for page_num, page in enumerate(reader.pages):
-                                    annots = page.get('/Annots', [])
-                                    if any(a.get_object().get('/T') == k for a in annots if hasattr(a, 'get_object')):
-                                        # Found the page, extract nearby text
-                                        with pdfplumber.open(io.BytesIO(b)) as pdf:
-                                            pdf_page = pdf.pages[page_num]
-                                            label = extract_checkbox_label(pdf_page, rect)
-                                            break
-                        except Exception as e:
-                            label = f"Error extracting label: {e}"
-                    
-                    # For checkboxes, try to get the export value from appearance streams
-                    if str(field_type).find('/Btn') != -1:
-                        st.write(f"\nDEBUG Field {k}:")
-                        st.write("Raw field dict:", {str(key): str(value) for key, value in v.items()})
-                        if label:
-                            st.write("Extracted label:", label)
-                    
-                    # Store both the checkbox state and its label
-                    is_checked = _normalize_val(val, field_type, states, v, label)
-                    if label:
-                        fields[f"{k} ({label})"] = is_checked
-                    else:
-                        fields[k] = is_checked
-                else:
-                    fields[k] = _normalize_val(v)
-    except Exception:
+                    # Skip buttons as we already processed them
+                    if str(field_type) != '/Btn':
+                        field_title = v.get('/TU', '') or k
+                        val = v.get('/V') or v.get('V') or v.get('value')
+                        if val:
+                            fields[field_title] = str(val)
+                elif v:  # Simple fields
+                    fields[k] = str(v)
+    except Exception as e:
+        st.write(f"Error processing fields: {str(e)}")
         pass
 
     # Strategy 3: inspect page annotations for widget fields
@@ -342,11 +580,86 @@ if uploaded_file:
     # Read bytes once and reuse for both text extraction and field extraction
     file_bytes = uploaded_file.read()
 
-    # Extract visible text
+    # Extract visible text and checked values
     text = extract_text_from_bytes(file_bytes)
 
-    st.subheader("Extracted visible text")
-    st.text_area("Content", text if text else "(no visible text extracted)", height=300)
+    st.subheader("Extracted Content")
+    
+    # Display regular text
+    st.text_area("Visible Text", text if text else "(no visible text extracted)", height=200)
+    
+    # Create a dropdown for button field debug info
+    with st.expander("🔍 Found Button Fields"):
+        # Process the PDF to find buttons
+        reader = PdfReader(io.BytesIO(file_bytes))
+        found_buttons = []
+        
+        for page_num, page in enumerate(reader.pages, 1):
+            try:
+                annots = page.get('/Annots', [])
+                for annot in annots:
+                    field = annot.get_object()
+                    if not field:
+                        continue
+                        
+                    field_type = field.get('/FT', '')
+                    if field_type == '/Btn':  # Only process button fields
+                        # Get field information
+                        field_value = field.get('/V', '')
+                        field_state = field.get('/AS', '')
+                        field_name = field.get('/T', '')
+                        field_title = field.get('/TU', '')
+                        
+                        # Get parent information if available
+                        parent_info = ""
+                        if '/Parent' in field:
+                            try:
+                                parent = field['/Parent'].get_object()
+                                parent_title = parent.get('/TU', '')
+                                parent_name = parent.get('/T', '')
+                                if parent_title or parent_name:
+                                    parent_info = f"\nParent: {parent_title or parent_name}"
+                            except:
+                                pass
+                        
+                        # Check if button is checked
+                        is_checked = any([
+                            field_value == '/On',
+                            field_value == 'Yes',
+                            field_value == 'Checked',
+                            field_state == '/Yes',
+                            field_state == '/On'
+                        ])
+                        
+                        # Format the button information
+                        button_info = {
+                            'page': page_num,
+                            'name': field_name,
+                            'title': field_title,
+                            'value': field_value,
+                            'state': field_state,
+                            'is_checked': is_checked,
+                            'parent_info': parent_info
+                        }
+                        found_buttons.append(button_info)
+            except Exception as e:
+                st.error(f"Error processing page {page_num}: {str(e)}")
+                
+        # Display the found buttons
+        if found_buttons:
+            for btn in found_buttons:
+                with st.container():
+                    status = "✅ CHECKED" if btn['is_checked'] else "❌ UNCHECKED"
+                    st.markdown(f"**Button on Page {btn['page']}** - {status}")
+                    st.code(
+                        f"Name: {btn['name']}\n"
+                        f"Title: {btn['title']}\n"
+                        f"Value: {btn['value']}\n"
+                        f"State: {btn['state']}"
+                        f"{btn['parent_info']}"
+                    )
+        else:
+            st.info("No button fields found in this PDF.")
 
     # Debug panel to show raw PDF data
     with st.expander("🔍 Debug Information (Raw PDF Data)"):
@@ -472,16 +785,102 @@ if uploaded_file:
 
     # Extract form fields (AcroForm/widget values)
     st.subheader("Form field values (if present)")
-    fields, err = extract_form_fields_from_bytes(file_bytes)
-    if err:
-        st.warning(err)
-        st.info("Install 'pypdf' (or 'PyPDF2') to improve form field extraction. Add to requirements.txt")
-    else:
-        if fields:
+    
+    def process_form_fields(pdf_bytes):
+        """Process all form fields from a PDF, handling various field types and structures."""
+        fields = {}
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        
+        for page in reader.pages:
             try:
-                df = pd.DataFrame(list(fields.items()), columns=["field", "value"] )
-                st.dataframe(df)
-            except Exception:
-                st.write(fields)
-        else:
-            st.info("No form fields detected in this PDF (or fields are not populated).")
+                annots = page.get('/Annots', [])
+                for annot in annots:
+                    field = annot.get_object()
+                    
+                    # Skip if not a valid field
+                    if not field:
+                        continue
+                        
+                    # Get basic field properties
+                    field_type = field.get('/FT', '')
+                    field_name = field.get('/T', '')
+                    field_value = field.get('/V', '')
+                    field_title = field.get('/TU', '')  # User-friendly name
+                    field_state = field.get('/AS', '')  # Appearance state
+                    
+                    # Get parent field info if available
+                    parent = field.get('/Parent', {})
+                    if hasattr(parent, 'get_object'):
+                        parent = parent.get_object()
+                    parent_title = parent.get('/TU', '') if hasattr(parent, 'get') else None
+                    
+                    # Determine the proper field name (from most specific to least)
+                    display_name = (parent_title or  # Parent's title
+                                  field_title or     # Field's title
+                                  field_name)        # Technical name
+                    
+                    if not display_name:  # Skip fields without names
+                        continue
+                        
+                    # Handle different field types
+                    if field_type == '/Btn':  # Buttons/Checkboxes
+                        if field_value == '/On' or field_state == '/Yes':
+                            # Try to get the value from various sources
+                            value = None
+                            
+                            # 1. Check if it's a yes/no field
+                            name_lower = field_name.lower()
+                            if any(yes in name_lower for yes in ['ja', 'yes', 'oui', 'si']):
+                                value = 'yes'
+                            elif any(no in name_lower for no in ['nein', 'no', 'non']):
+                                value = 'no'
+                                
+                            # 2. Check for value in export value
+                            if not value and '/AP' in field:
+                                ap = field['/AP']
+                                if hasattr(ap, 'get'):
+                                    n = ap.get('/N', {})
+                                    if hasattr(n, 'keys'):
+                                        keys = [k.strip('/') for k in n.keys() if k != '/Off']
+                                        if keys:
+                                            value = keys[0]
+                            
+                            # 3. Use the field title or name as value
+                            if not value:
+                                value = "checked"
+                                
+                            fields[display_name] = value
+                            
+                    elif field_type == '/Tx':  # Text fields
+                        if field_value:
+                            fields[display_name] = str(field_value)
+                            
+                    elif field_type == '/Ch':  # Choice fields
+                        if field_value:
+                            if isinstance(field_value, list):
+                                fields[display_name] = ', '.join(str(v) for v in field_value)
+                            else:
+                                fields[display_name] = str(field_value)
+                                
+            except Exception as e:
+                st.write(f"Error processing page annotations: {str(e)}")
+                continue
+                
+        return fields
+    
+    # Process the form fields
+    fields = process_form_fields(file_bytes)
+    
+    if fields:
+        try:
+            # Convert to dataframe and sort
+            df = pd.DataFrame(list(fields.items()), columns=["field", "value"])
+            # Only show rows where value is not empty
+            df = df[df['value'].astype(str).str.strip() != '']
+            df = df.sort_values('field')
+            st.dataframe(df)
+        except Exception as e:
+            st.write(f"Error creating dataframe: {str(e)}")
+            st.write(fields)
+    else:
+        st.info("No form fields detected in this PDF (or fields are not populated).")
