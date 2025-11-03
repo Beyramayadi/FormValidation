@@ -5,3 +5,5 @@ pypdf
 python-dateutil
 numpy
 Pillow
+openai
+python-dotenv
