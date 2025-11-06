@@ -5,8 +5,14 @@ import numpy as np
 import json
 from pdf_processor import PDFProcessor
 from pdf_ocr_extractor import PDFOCRExtractor
+import os
+import hashlib
+from datetime import datetime
 
-st.title("AI Form Agent")
+st.set_page_config(page_title="AI Form Agent", page_icon="📄", layout="wide")
+
+st.title("📄 AI Form Agent")
+st.markdown("Upload a PDF form to extract and validate field information with AI assistance.")
 
 uploaded_file = st.file_uploader("Upload a PDF form", type=["pdf"])
 
@@ -16,79 +22,66 @@ if uploaded_file:
     
     # Create PDF processor instance
     pdf = PDFProcessor(file_bytes)
+    # Compute a simple identifier for this document (for feedback)
+    doc_hash = hashlib.md5(file_bytes).hexdigest() if file_bytes else None
+    # Initialize session state for manual approvals/corrections
+    if 'overrides' not in st.session_state:
+        st.session_state['overrides'] = {}
+    st.session_state['current_doc'] = doc_hash
+    
+    # Auto-load previous feedback on startup
+    feedback_dir = os.path.join("data")
+    feedback_path = os.path.join(feedback_dir, "feedback.csv")
+    if 'feedback_loaded' not in st.session_state:
+        st.session_state['feedback_loaded'] = False
+    
+    if not st.session_state['feedback_loaded'] and os.path.exists(feedback_path):
+        try:
+            hist = pd.read_csv(feedback_path)
+            if not hist.empty:
+                # Get latest correction for each field
+                latest = hist.sort_values('timestamp').drop_duplicates(subset=['field'], keep='last')
+                for _, rec in latest.iterrows():
+                    fname = str(rec['field'])
+                    st.session_state['overrides'][fname] = {
+                        'value': rec['final_value'],
+                        'approved': True,
+                        'source': 'auto-loaded'
+                    }
+                st.session_state['feedback_loaded'] = True
+        except Exception:
+            pass
 
-    st.subheader("Extracted Content")
+    # Removed: Visible text preview, Found Button Fields, and Debug Information panels
+            
+    # Extraction Settings
+    with st.expander("⚙️ Extraction Settings", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            use_llm = st.checkbox("🤖 Use AI-Enhanced Extraction", value=False,
+                                 help="Use GPT-4o to improve field extraction accuracy")
+        with col2:
+            use_validation = st.checkbox("✅ Use Multi-Source Validation", value=True,
+                                       help="Cross-validate fields from multiple sources")
     
-    # Display regular text
-    text = pdf.extract_text()
-    st.text_area("Visible Text", text if text else "(no visible text extracted)", height=200)
+    # Extract form fields
+    st.subheader("📝 Form Fields")
     
-    # Create a dropdown for button field debug info
-    with st.expander("🔍 Found Button Fields"):
-        # Get all buttons from the PDF
-        found_buttons = pdf.get_all_buttons()
+    # Get form fields with optional LLM enhancement and validation
+    try:
+        fields, error_message = pdf.get_form_fields(use_llm=use_llm, use_validation=use_validation)
         
-        # Display the found buttons
-        if found_buttons:
-            for btn in found_buttons:
-                with st.container():
-                    status = "✅ CHECKED" if btn['is_checked'] else "❌ UNCHECKED"
-                    st.markdown(f"**Button on Page {btn['page']}** - {status}")
-                    
-                    # Prepare the code block content
-                    code_content = [
-                        f"Name: {btn['name']}",
-                        f"Title: {btn['title']}",
-                        f"Value: {btn['value']}",
-                        f"State: {btn['state']}"
-                    ]
-                    
-                    # Add parent info if exists
-                    if btn['parent']:
-                        code_content.append(f"Parent: {btn['parent']}")
-                        
-                    st.code("\n".join(code_content))
-        else:
-            st.info("No button fields found in this PDF.")
-
-    # Debug panel to show raw PDF data
-    with st.expander("🔍 Debug Information (Raw PDF Data)"):
-        # Display PDF metadata
-        st.write("PDF Basic Info:")
-        metadata = pdf.get_metadata()
-        if metadata:
-            st.json(metadata)
-        else:
-            st.info("No metadata found")
-            
-        # Display form fields
-        st.write("Form Fields (Raw):")
-        form_fields = pdf.get_form_fields()
-        if form_fields:
-            st.json(form_fields)
-        else:
-            st.info("No form fields found via get_fields()")
-            
-        # Display XFA check
-        st.write("XFA Form Check:")
-        if pdf.is_xfa_form():
-            st.warning("⚠️ This appears to be an XFA form - different parsing may be needed")
-        else:
-            st.info("Not an XFA form")
-            
-    # Extract form fields (AcroForm/widget values)
-    st.subheader("Form field values (if present)")
-    
-    # Add toggle for LLM-enhanced extraction
-    use_llm = st.checkbox("Use AI-Enhanced Extraction", value=False,
-                         help="Use AI to improve field extraction accuracy")
-    
-    # Get form fields with optional LLM enhancement
-    fields, error_message = pdf.get_form_fields(use_llm=use_llm)
-    
-    # Display error message if AI extraction fails
-    if use_llm and error_message:
-        st.error(f"An error occurred during AI-enhanced extraction: {error_message}")
+        # Display error/warning messages
+        if error_message:
+            if "⚠️" in error_message:
+                st.warning(error_message)
+            else:
+                st.error(error_message)
+    except Exception as e:
+        st.error(f"Error getting form fields: {str(e)}")
+        import traceback
+        st.code(traceback.format_exc())
+        fields = None
 
     if fields:
         try:
@@ -98,12 +91,16 @@ if uploaded_file:
             for field_name, field_info in fields.items():
                 # Handle both old and new format
                 if isinstance(field_info, dict):
-                    # New LLM format
+                    # New validated format
                     field_data.append({
                         "field": field_name,
-                        "value": field_info["value"],
-                        "type": field_info["type"],
-                        "confidence": field_info['confidence']
+                        "value": field_info.get("value"),
+                        "type": field_info.get("type", "text"),
+                        "confidence": field_info.get('confidence'),
+                        "status": field_info.get('status', 'unknown'),
+                        "sources": field_info.get('sources', 1),
+                        "conflicts": len(field_info.get('conflicts', [])),
+                        "notes": field_info.get('notes', [])
                     })
                 else:
                     # Old format
@@ -113,7 +110,11 @@ if uploaded_file:
                             "field": field_name,
                             "value": clean_value,
                             "type": "auto",
-                            "confidence": None
+                            "confidence": None,
+                            "status": "unknown",
+                            "sources": 1,
+                            "conflicts": 0,
+                            "notes": []
                         })
             
             # Convert to dataframe and sort
@@ -121,58 +122,267 @@ if uploaded_file:
                 df = pd.DataFrame(field_data)
                 df = df.sort_values('field')
                 
-                # Display the dataframe with conditional formatting
-                st.dataframe(
-                    df,
-                    hide_index=True,
-                    column_config={
-                        "confidence": st.column_config.ProgressColumn(
-                            "Confidence",
-                            help="AI confidence in the extracted value",
-                            format="%d%%",
-                            min_value=0,
-                            max_value=100,
-                        ),
-                        "type": st.column_config.SelectboxColumn(
-                            "Field Type",
-                            help="Type of form field",
-                            options=["text", "checkbox", "radio", "date", "address", "auto"],
-                            required=True,
-                        )
-                    }
-                )
+                # Apply saved corrections/approvals to the dataframe BEFORE displaying
+                if st.session_state.get('overrides'):
+                    for i, r in df.iterrows():
+                        fname = str(r['field'])
+                        if fname in st.session_state['overrides']:
+                            df.at[i, 'value'] = st.session_state['overrides'][fname]['value']
+                            df.at[i, 'status'] = 'validated'
+                            df.at[i, 'confidence'] = 100  # High confidence for manual overrides
                 
-                # Show statistics if using LLM
-                if use_llm:
-                    st.subheader("Extraction Statistics")
-                    col1, col2, col3 = st.columns(3)
+                # Separate fields by status if using validation
+                if use_validation:
+                    validated = df[df['status'] == 'validated']
+                    needs_review = df[df['status'] == 'needs_review']
+                    missing = df[df['status'] == 'missing']
+                    
+                    # Show summary metrics
+                    st.subheader("📊 Validation Summary")
+                    col1, col2, col3, col4 = st.columns(4)
                     
                     with col1:
-                        st.metric("Total Fields", len(field_data))
+                        st.metric("✅ Validated", len(validated))
                     with col2:
-                        high_conf = sum(1 for f in field_data if isinstance(f["confidence"], int) and f["confidence"] >= 90)
-                        st.metric("High Confidence Fields", high_conf)
+                        st.metric("⚠️ Needs Review", len(needs_review))
                     with col3:
-                        # Calculate average confidence only if we have valid confidence values
+                        st.metric("❌ Missing", len(missing))
+                    with col4:
                         confidences = [f["confidence"] for f in field_data if isinstance(f["confidence"], int)]
                         if confidences:
                             avg_conf = np.mean(confidences)
                             st.metric("Average Confidence", f"{avg_conf:.1f}%")
-                            # Display a warning if average confidence is low
-                            if avg_conf < 70:
-                                st.warning(f"The average AI confidence of {avg_conf:.1f}% is low. Please double-check the extracted values.")
                         else:
                             st.metric("Average Confidence", "N/A")
+                    
+                    # Display validated fields
+                    if not validated.empty:
+                        st.subheader("✅ Validated Fields")
+                        st.dataframe(
+                            validated[['field', 'value', 'type', 'confidence', 'sources']],
+                            hide_index=True,
+                            column_config={
+                                "confidence": st.column_config.ProgressColumn(
+                                    "Confidence",
+                                    help="Confidence in the extracted value",
+                                    format="%d%%",
+                                    min_value=0,
+                                    max_value=100,
+                                ),
+                                "sources": st.column_config.NumberColumn(
+                                    "Sources",
+                                    help="Number of extraction sources that provided this value",
+                                    format="%d"
+                                )
+                            }
+                        )
+                    
+                    # Display fields needing review
+                    if not needs_review.empty:
+                        st.subheader("⚠️ Fields Needing Review")
+                        for idx, row in needs_review.iterrows():
+                            field_name = str(row['field'])
+                            field_key = ''.join(ch if ch.isalnum() else '_' for ch in field_name)
+                            with st.expander(f"🔍 {field_name} = {row['value']} (Confidence: {row['confidence']}%)"):
+                                st.write("**Status:**", row['status'])
+                                st.write("**Sources:**", row['sources'])
+                                # Show per-source values if available
+                                details = fields.get(field_name, {}) if isinstance(fields, dict) else {}
+                                source_details = details.get('source_details') if isinstance(details, dict) else None
+                                if source_details:
+                                    st.caption("Source details:")
+                                    st.dataframe(
+                                        pd.DataFrame(source_details),
+                                        hide_index=True,
+                                    )
+                                if row['conflicts'] > 0:
+                                    st.warning(f"⚠️ {row['conflicts']} conflict(s) detected")
+                                if row['notes']:
+                                    st.info("**Validation Notes:**")
+                                    for note in row['notes']:
+                                        st.write(f"• {note}")
+
+                                # Show current override (if any)
+                                if field_name in st.session_state['overrides']:
+                                    ov = st.session_state['overrides'][field_name]
+                                    st.success(f"Approved value: {ov.get('value')} (manual)")
+
+                                # Allow manual correction or approval
+                                corrected_value = st.text_input(
+                                    f"Correct value for {field_name}", 
+                                    value=str(row['value']) if row['value'] else "",
+                                    key=f"correct_{field_key}"
+                                )
+                                col_appr, col_save = st.columns(2)
+                                with col_appr:
+                                    if st.button("Approve as-is", key=f"approve_{field_key}"):
+                                        st.session_state['overrides'][field_name] = {
+                                            'value': str(row['value']) if row['value'] is not None else "",
+                                            'approved': True,
+                                            'source': 'manual-approve'
+                                        }
+                                        # Auto-save to feedback immediately
+                                        try:
+                                            os.makedirs(feedback_dir, exist_ok=True)
+                                            now = datetime.utcnow().isoformat()
+                                            orig = df[df['field'] == field_name]
+                                            orig_val = orig.iloc[0]['value'] if not orig.empty else None
+                                            orig_status = orig.iloc[0]['status'] if ('status' in orig.columns and not orig.empty) else None
+                                            orig_conf = orig.iloc[0]['confidence'] if ('confidence' in orig.columns and not orig.empty) else None
+                                            fb_row = pd.DataFrame([{
+                                                'doc_hash': doc_hash,
+                                                'field': field_name,
+                                                'original_value': orig_val,
+                                                'final_value': str(row['value']) if row['value'] is not None else "",
+                                                'approved': True,
+                                                'status_before': orig_status,
+                                                'confidence': orig_conf,
+                                                'timestamp': now
+                                            }])
+                                            fb_row.to_csv(feedback_path, mode='a', header=not os.path.exists(feedback_path), index=False)
+                                        except Exception:
+                                            pass
+                                        st.toast(f"✅ Approved and saved {field_name}")
+                                        st.rerun()
+                                with col_save:
+                                    if st.button("Save correction", key=f"save_{field_key}"):
+                                        st.session_state['overrides'][field_name] = {
+                                            'value': corrected_value,
+                                            'approved': True,
+                                            'source': 'manual-correct'
+                                        }
+                                        # Auto-save to feedback immediately
+                                        try:
+                                            os.makedirs(feedback_dir, exist_ok=True)
+                                            now = datetime.utcnow().isoformat()
+                                            orig = df[df['field'] == field_name]
+                                            orig_val = orig.iloc[0]['value'] if not orig.empty else None
+                                            orig_status = orig.iloc[0]['status'] if ('status' in orig.columns and not orig.empty) else None
+                                            orig_conf = orig.iloc[0]['confidence'] if ('confidence' in orig.columns and not orig.empty) else None
+                                            fb_row = pd.DataFrame([{
+                                                'doc_hash': doc_hash,
+                                                'field': field_name,
+                                                'original_value': orig_val,
+                                                'final_value': corrected_value,
+                                                'approved': True,
+                                                'status_before': orig_status,
+                                                'confidence': orig_conf,
+                                                'timestamp': now
+                                            }])
+                                            fb_row.to_csv(feedback_path, mode='a', header=not os.path.exists(feedback_path), index=False)
+                                        except Exception:
+                                            pass
+                                        st.toast(f"✅ Saved correction for {field_name}")
+                                        st.rerun()
+                    
+                    # Display missing fields
+                    if not missing.empty:
+                        st.subheader("❌ Missing Required Fields")
+                        st.error("The following required fields were not found:")
+                        for idx, row in missing.iterrows():
+                            st.write(f"• **{row['field']}** ({row['type']})")
+                
+                else:
+                    # Display without validation status
+                    st.dataframe(
+                        df[['field', 'value', 'type', 'confidence']],
+                        hide_index=True,
+                        column_config={
+                            "confidence": st.column_config.ProgressColumn(
+                                "Confidence",
+                                help="Confidence in the extracted value",
+                                format="%d%%",
+                                min_value=0,
+                                max_value=100,
+                            )
+                        }
+                    )
+                
+                # Build final output by applying overrides (approvals/corrections)
+                st.subheader("✅ Final Output (with approvals/corrections)")
+                final_df = df.copy()
+                if st.session_state.get('overrides'):
+                    for i, r in final_df.iterrows():
+                        fname = str(r['field'])
+                        if fname in st.session_state['overrides']:
+                            final_df.at[i, 'value'] = st.session_state['overrides'][fname]['value']
+                            final_df.at[i, 'status'] = 'validated'
+                final_json = {str(r['field']): r['value'] for _, r in final_df.iterrows()}
+                st.json(final_json)
+
+                # Feedback & learning status
+                with st.expander("🧠 Feedback & Learning"):
+                    st.caption("Corrections are automatically saved and applied on next upload.")
+                    if os.path.exists(feedback_path):
+                        try:
+                            hist = pd.read_csv(feedback_path)
+                            total_corrections = len(hist)
+                            unique_fields = hist['field'].nunique()
+                            st.info(f"📊 {total_corrections} total corrections saved for {unique_fields} unique field(s).")
+                            
+                            if st.button("Clear all saved feedback"):
+                                os.remove(feedback_path)
+                                st.session_state['overrides'] = {}
+                                st.session_state['feedback_loaded'] = False
+                                st.success("Cleared all feedback. Reload the page.")
+                        except Exception as ex:
+                            st.warning(f"Could not read feedback: {ex}")
+                    else:
+                        st.info("No saved feedback yet. Approve or correct fields above to start learning.")
+
+                # Show statistics
+                st.subheader("📊 Statistics")
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric("Total Fields", len(field_data))
+                with col2:
+                    confidences = [f["confidence"] for f in field_data if isinstance(f["confidence"], int)]
+                    if confidences:
+                        high_conf = sum(1 for c in confidences if c >= 90)
+                        st.metric("High Confidence", high_conf)
+                    else:
+                        st.metric("High Confidence", "N/A")
+                with col3:
+                    if confidences:
+                        avg_conf = np.mean(confidences)
+                        st.metric("Average Confidence", f"{avg_conf:.1f}%")
+                    else:
+                        st.metric("Average Confidence", "N/A")
+                
+                # Export options (use final values)
+                st.subheader("💾 Export Data")
+                col1, col2 = st.columns(2)
+                with col1:
+                    # Export as JSON
+                    export_data = {str(r['field']): r['value'] for _, r in final_df.iterrows()}
+                    st.download_button(
+                        label="📥 Download as JSON",
+                        data=json.dumps(export_data, ensure_ascii=False, indent=2),
+                        file_name="extracted_fields.json",
+                        mime="application/json"
+                    )
+                with col2:
+                    # Export as CSV
+                    csv = final_df[['field', 'value', 'type', 'confidence']].to_csv(index=False)
+                    st.download_button(
+                        label="📥 Download as CSV",
+                        data=csv,
+                        file_name="extracted_fields.csv",
+                        mime="text/csv"
+                    )
             else:
                 st.info("No populated form fields found in this PDF.")
         except Exception as e:
             st.error(f"Error processing form fields: {str(e)}")
-            st.error("Stack trace:", exception=e)
+            import traceback
+            st.error("Stack trace:")
+            st.code(traceback.format_exc())
     else:
         st.info("No form fields detected in this PDF.")
-    
+
     # OCR extraction section
-    st.subheader("OCR Text Extraction (Tesseract)")
+    st.subheader("🔍 OCR Text Extraction (Tesseract)")
     if uploaded_file:
         try:
             ocr_extractor = PDFOCRExtractor(file_bytes)

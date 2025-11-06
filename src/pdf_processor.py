@@ -243,19 +243,24 @@ class PDFProcessor:
         except Exception:
             return {}
             
-    def get_form_fields(self, use_llm: bool = False) -> Tuple[Dict[str, Any], Optional[str]]:
+    def get_form_fields(self, use_llm: bool = False, use_validation: bool = True, 
+                       schema: Optional[Dict[str, Any]] = None) -> Tuple[Dict[str, Any], Optional[str]]:
         """
-        Get all form fields from the PDF.
+        Get all form fields from the PDF with optional validation.
         
         Args:
             use_llm: Whether to use LLM-enhanced extraction
+            use_validation: Whether to use multi-source validation
+            schema: Optional schema for field validation
             
         Returns:
             A tuple containing the dictionary of form fields and an optional error message.
         """
         fields = {}
         error_message = None
+        
         try:
+            # Extract from native PDF fields
             if hasattr(self.reader, "get_fields"):
                 raw_fields = self.reader.get_fields()
                 if raw_fields:
@@ -280,13 +285,84 @@ class PDFProcessor:
                         else:
                             if field_data:
                                 fields[field_name] = str(field_data)
-                                
-            if use_llm:
+            
+            # Get buttons
+            buttons = self.get_all_buttons()
+            
+            # Use validation if requested
+            if use_validation:
+                from field_validator import FieldValidator
+                from form_schemas import SchemaManager
+                
+                # Get or detect schema
+                if schema is None:
+                    schema_mgr = SchemaManager()
+                    schema_name = schema_mgr.detect_schema(list(fields.keys()))
+                    schema = schema_mgr.get_schema(schema_name)
+                
+                # Extract text for validation
+                ocr_text = self.extract_text()
+                
+                # Get LLM fields if requested
+                llm_fields = {}
+                if use_llm:
+                    from llm_processor import LLMFieldExtractor
+                    extractor = LLMFieldExtractor()
+                    pdf_text = self.extract_text_with_llm()
+                    
+                    try:
+                        llm_fields, llm_error = extractor.extract_fields(pdf_text, fields, buttons)
+                        if llm_error:
+                            error_message = llm_error
+                    except Exception as e:
+                        error_message = f"Error in LLM processing: {str(e)}"
+                
+                # Validate all fields
+                validator = FieldValidator(schema=schema)
+                validated_fields = validator.validate_extraction(
+                    pdf_fields=fields,
+                    ocr_text=ocr_text,
+                    llm_fields=llm_fields,
+                    buttons=buttons
+                )
+                
+                # Convert validated fields back to the expected format
+                final_fields = {}
+                for field_name, validated_field in validated_fields.items():
+                    final_fields[field_name] = {
+                        "value": validated_field.final_value,
+                        "type": validated_field.field_type.value,
+                        "confidence": int(validated_field.confidence * 100),
+                        "status": validated_field.status.value,
+                        "sources": len(validated_field.sources),
+                        "source_details": [
+                            {
+                                "source": s.source,
+                                "value": s.value,
+                                "confidence": int(s.confidence * 100)
+                            } for s in validated_field.sources
+                        ],
+                        "conflicts": validated_field.conflicts,
+                        "notes": validated_field.validation_notes
+                    }
+                
+                # Add validation summary to error message if there are issues
+                needs_review = validator.get_needs_review(validated_fields)
+                if needs_review:
+                    review_fields = [f.name for f in needs_review]
+                    if error_message:
+                        error_message += f"\n⚠️ Fields needing review: {', '.join(review_fields)}"
+                    else:
+                        error_message = f"⚠️ {len(needs_review)} field(s) need review: {', '.join(review_fields)}"
+                
+                return final_fields, error_message
+            
+            # Fallback to non-validated extraction
+            elif use_llm:
                 from llm_processor import LLMFieldExtractor
                 extractor = LLMFieldExtractor()
                 
                 pdf_text = self.extract_text_with_llm()
-                buttons = self.get_all_buttons()
                 
                 try:
                     return extractor.extract_fields(pdf_text, fields, buttons)
