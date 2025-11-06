@@ -1,9 +1,0 @@
-streamlit
-pdfplumber
-pandas
-pypdf
-python-dateutil
-numpy
-Pillow
-openai
-python-dotenv

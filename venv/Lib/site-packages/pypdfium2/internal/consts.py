@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 geisserml <geisserml@gmail.com>
+# SPDX-FileCopyrightText: 2025 geisserml <geisserml@gmail.com>
 # SPDX-License-Identifier: Apache-2.0 OR BSD-3-Clause
 
 import pypdfium2.raw as pdfium_c
@@ -27,26 +27,34 @@ RotationToDegrees = {v: k for k, v in RotationToConst.items()}
 BitmapTypeToNChannels = {
     pdfium_c.FPDFBitmap_Gray: 1,
     pdfium_c.FPDFBitmap_BGR:  3,
-    pdfium_c.FPDFBitmap_BGRA: 4,
     pdfium_c.FPDFBitmap_BGRx: 4,
+    pdfium_c.FPDFBitmap_BGRA: 4,
 }
 
 #: Convert a PDFium bitmap format to string, assuming BGR byte order. (:attr:`FPDFBitmap_Unknown` is deliberately not handled.)
 BitmapTypeToStr = {
     pdfium_c.FPDFBitmap_Gray: "L",
     pdfium_c.FPDFBitmap_BGR:  "BGR",
-    pdfium_c.FPDFBitmap_BGRA: "BGRA",
     pdfium_c.FPDFBitmap_BGRx: "BGRX",
+    pdfium_c.FPDFBitmap_BGRA: "BGRA",
 }
 
 #: Convert a PDFium bitmap format to string, assuming RGB byte order. (:attr:`FPDFBitmap_Unknown` is deliberately not handled.)
 BitmapTypeToStrReverse = {
     pdfium_c.FPDFBitmap_Gray: "L",
     pdfium_c.FPDFBitmap_BGR:  "RGB",
-    pdfium_c.FPDFBitmap_BGRA: "RGBA",
     pdfium_c.FPDFBitmap_BGRx: "RGBX",
+    pdfium_c.FPDFBitmap_BGRA: "RGBA",
 }
 
+if PDFIUM_INFO.build >= 7098:
+    # New pixel format FPDFBitmap_BGRA_Premul
+    # Skia-only at the time of writing. Added for completeness and to satisfy the test suite.
+    BitmapTypeToNChannels[pdfium_c.FPDFBitmap_BGRA_Premul] = 4
+    BitmapTypeToStr[pdfium_c.FPDFBitmap_BGRA_Premul] = "BGRa"
+    BitmapTypeToStrReverse[pdfium_c.FPDFBitmap_BGRA_Premul] = "RGBa"
+
+# TODO consider a bi-directional dict in the future?
 #: Convert a string to PDFium bitmap format, assuming BGR byte order. Inversion of :data:`BitmapTypeToStr`.
 BitmapStrToConst = {v: k for k, v in BitmapTypeToStr.items()}
 
@@ -73,7 +81,7 @@ ColorspaceToStr = _fallback_dict({
     pdfium_c.FPDF_COLORSPACE_ICCBASED:   "ICCBased",
     pdfium_c.FPDF_COLORSPACE_SEPARATION: "Separation",
     pdfium_c.FPDF_COLORSPACE_DEVICEN:    "DeviceN",
-    pdfium_c.FPDF_COLORSPACE_INDEXED:    "Indexed",  # i. e. palettized
+    pdfium_c.FPDF_COLORSPACE_INDEXED:    "Indexed",  # i.e. palettized
     pdfium_c.FPDF_COLORSPACE_PATTERN:    "Pattern",
 })
 
@@ -126,9 +134,8 @@ ErrorToStr = _fallback_dict({
 })
 
 
-# known implication: causes eager evaluation of pdfium version
-if "XFA" in PDFIUM_INFO.flags:
-    #: [V8/XFA builds only] Convert a PDFium XFA error constant (:attr:`FPDF_ERR_XFA*`) to string.
+if "XFA" in PDFIUM_INFO.flags:  # pragma: no cover
+    #: [XFA builds only] Convert a PDFium XFA error constant (:attr:`FPDF_ERR_XFA*`) to string.
     XFAErrorToStr = _fallback_dict({
         pdfium_c.FPDF_ERR_XFALOAD:   "Load error",
         pdfium_c.FPDF_ERR_XFALAYOUT: "Layout error",
@@ -138,7 +145,8 @@ if "XFA" in PDFIUM_INFO.flags:
 UnsupportedInfoToStr = _fallback_dict({
     pdfium_c.FPDF_UNSP_DOC_XFAFORM:               "XFA form",
     pdfium_c.FPDF_UNSP_DOC_PORTABLECOLLECTION:    "Portable collection",
-    pdfium_c.FPDF_UNSP_DOC_ATTACHMENT:            "Attachment (incomplete support)",  # https://crbug.com/pdfium/1945
+    # https://crbug.com/pdfium/1945
+    pdfium_c.FPDF_UNSP_DOC_ATTACHMENT:            "Attachment (incomplete support)",
     pdfium_c.FPDF_UNSP_DOC_SECURITY:              "Security",
     pdfium_c.FPDF_UNSP_DOC_SHAREDREVIEW:          "Shared review",
     pdfium_c.FPDF_UNSP_DOC_SHAREDFORM_ACROBAT:    "Shared form (acrobat)",

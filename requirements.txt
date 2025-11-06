@@ -1,0 +1,12 @@
+streamlit
+pdfplumber
+pandas
+pypdf
+python-dateutil
+numpy
+Pillow
+openai
+python-dotenv
+pytesseract
+pdf2image
+pypdfium2
