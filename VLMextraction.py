@@ -10,7 +10,7 @@ from pdf2image import convert_from_path
 poppler_bin_path = r"C:\Program Files\poppler\poppler-25.07.0\Library\bin"
 
 # The PDF you want to process
-pdf_file_path = r"C:\Users\MSI\Desktop\MSc CS\3rd semester MSc CS\Applied Artificial Intelligence Lab\FormValidation\Dienstreise_Antrag_auf_Erstattung_der_Reisekosten_indigo.pdf"
+pdf_file_path = r"C:\Users\MSI\Desktop\MSc CS\3rd semester MSc CS\Applied Artificial Intelligence Lab\FormValidation\u_kn_travel_expense_report_1.pdf"
 # ---------------------
 
 def pdf_page_to_base64(pdf_path, page_num=0, poppler_path=None):
@@ -58,11 +58,8 @@ if not image_base64:
 prompt = """
 You are an expert data extraction.
 Analyze the attached image of a form.
-Extract all key-value pairs and all checked boxes.
+Extract all key-value pairs.
 
-- Handle horizontal and vertical layouts (e.g., a label above a value).
-- Identify the filled-in data (handwritten or typed) for each label.
-- For checkboxes, find the label for the box that is checked (☑).
 - Return the results in the following JSON format:
 
 {
@@ -70,12 +67,8 @@ Extract all key-value pairs and all checked boxes.
     "Label 1": "Value 1",
     "Label 2": "Value 2",
     ...
-  },
-  "checked_items": [
-    "Checked Label 1",
-    "Checked Label 2",
-    ...
-  ]
+  }
+
 }
 Respond ONLY with a valid JSON object.
 Do not include any other text, explanations, or markdown formatting like ```json.
