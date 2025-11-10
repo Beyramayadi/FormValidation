@@ -10,7 +10,7 @@ from pdf2image import convert_from_path
 poppler_bin_path = r"C:\Program Files\poppler\poppler-25.07.0\Library\bin"
 
 # The PDF you want to process
-pdf_file_path = r"C:\Users\MSI\Desktop\MSc CS\3rd semester MSc CS\Applied Artificial Intelligence Lab\FormValidation\u_kn_travel_expense_report_1.pdf"
+pdf_file_path = r"C:\Users\MSI\Desktop\MSc CS\3rd semester MSc CS\Applied Artificial Intelligence Lab\FormValidation\forms\Dienstreise_Antrag_auf_Erstattung_der_Reisekosten_indigo.pdf"
 # ---------------------
 
 def pdf_page_to_base64(pdf_path, page_num=0, poppler_path=None):
@@ -74,15 +74,21 @@ Respond ONLY with a valid JSON object.
 Do not include any other text, explanations, or markdown formatting like ```json.
 """
 
+prompt2 = "describe the image in detail"
+
 print("Sending image to local VLM. This may take up to a minute...")
 
+# save the image to a file for debugging
+with open("debug_image.png", "wb") as f:
+    f.write(base64.b64decode(image_base64))
+    
 try:
     response = ollama.chat(
         model='llava-phi3:3.8b', # Use your desired VLM model here
         messages=[
             {
                 'role': 'user',
-                'content': prompt,
+                'content': prompt2,
                 'images': [image_base64] # Pass the image here
             }
         ],
@@ -93,6 +99,9 @@ try:
     
     # The response content should be a JSON string
     json_string = response['message']['content']
+    print("Raw JSON string received:")
+    print(json_string)
+    print("\nParsed JSON output:")
     
     # Parse the string into a Python dictionary
     try:
