@@ -1,0 +1,8 @@
+doc_hash,field,original_value,final_value,approved,status_before,confidence,timestamp
+1c368663f08b7b0a7dccf8733d5d16d9,Abschlag erhalten - Betrag,2200,2200,True,needs_review,80,2025-11-06T13:44:37.414268
+1c368663f08b7b0a7dccf8733d5d16d9,Abschlag erhalten - Betrag,2200,2200,True,needs_review,80,2025-11-06T13:46:15.459311
+1c368663f08b7b0a7dccf8733d5d16d9,Ankunft Uhrzeit,11.30,11:30,True,needs_review,80,2025-11-06T13:46:15.459311
+1c368663f08b7b0a7dccf8733d5d16d9,Ankunft Datum,20.12.2023,20.12.2023,True,needs_review,48,2025-11-08T00:25:52.229578
+1c368663f08b7b0a7dccf8733d5d16d9,Anreise Beginn Datum,9.12.2023,9.12.2023,True,needs_review,48,2025-11-08T00:26:00.325760
+1c368663f08b7b0a7dccf8733d5d16d9,Anreise Beginn Uhrzeit,4:00,4:00,True,needs_review,80,2025-11-08T00:26:04.011568
+1c368663f08b7b0a7dccf8733d5d16d9,Rückreise Beginn Datum,19.12.2023,19.12.2023,True,needs_review,48,2025-11-10T11:26:54.637083
