@@ -56,13 +56,21 @@ if uploaded_file:
             
     # Extraction Settings
     with st.expander("⚙️ Extraction Settings", expanded=False):
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             use_llm = st.checkbox("🤖 Use AI-Enhanced Extraction", value=False,
                                  help="Use GPT-4o to improve field extraction accuracy")
         with col2:
             use_validation = st.checkbox("✅ Use Multi-Source Validation", value=True,
                                        help="Cross-validate fields from multiple sources")
+        with col3:
+            validation_threshold = st.slider(
+                "Validation threshold (%)",
+                min_value=50,
+                max_value=99,
+                value=85,
+                help="Fields at or above this confidence count as validated in the UI"
+            )
     
     # Extract form fields
     st.subheader("📝 Form Fields")
@@ -131,11 +139,19 @@ if uploaded_file:
                             df.at[i, 'status'] = 'validated'
                             df.at[i, 'confidence'] = 100  # High confidence for manual overrides
                 
+                # Compute UI status using threshold (without changing backend statuses)
+                conf_series = pd.to_numeric(df['confidence'], errors='coerce').fillna(0)
+                df['ui_status'] = np.where(
+                    df['status'] == 'missing',
+                    'missing',
+                    np.where(conf_series >= validation_threshold, 'validated', 'needs_review')
+                )
+
                 # Separate fields by status if using validation
                 if use_validation:
-                    validated = df[df['status'] == 'validated']
-                    needs_review = df[df['status'] == 'needs_review']
-                    missing = df[df['status'] == 'missing']
+                    validated = df[df['ui_status'] == 'validated']
+                    needs_review = df[df['ui_status'] == 'needs_review']
+                    missing = df[df['ui_status'] == 'missing']
                     
                     # Show summary metrics
                     st.subheader("📊 Validation Summary")
@@ -148,12 +164,14 @@ if uploaded_file:
                     with col3:
                         st.metric("❌ Missing", len(missing))
                     with col4:
-                        confidences = [f["confidence"] for f in field_data if isinstance(f["confidence"], int)]
-                        if confidences:
-                            avg_conf = np.mean(confidences)
-                            st.metric("Average Confidence", f"{avg_conf:.1f}%")
+                        # Average confidence of validated fields only (meets threshold)
+                        validated_confidences = validated['confidence'].dropna()
+                        validated_confidences = pd.to_numeric(validated_confidences, errors='coerce').dropna()
+                        if len(validated_confidences) > 0:
+                            avg_conf = validated_confidences.mean()
+                            st.metric("Avg Confidence (Validated)", f"{avg_conf:.1f}%")
                         else:
-                            st.metric("Average Confidence", "N/A")
+                            st.metric("Avg Confidence (Validated)", "N/A")
                     
                     # Display validated fields
                     if not validated.empty:
@@ -307,6 +325,7 @@ if uploaded_file:
                         if fname in st.session_state['overrides']:
                             final_df.at[i, 'value'] = st.session_state['overrides'][fname]['value']
                             final_df.at[i, 'status'] = 'validated'
+                            final_df.at[i, 'ui_status'] = 'validated'
                 final_json = {str(r['field']): r['value'] for _, r in final_df.iterrows()}
                 st.json(final_json)
 
@@ -330,25 +349,24 @@ if uploaded_file:
                     else:
                         st.info("No saved feedback yet. Approve or correct fields above to start learning.")
 
-                # Show statistics
+                # Show statistics (threshold-aware)
                 st.subheader("📊 Statistics")
                 col1, col2, col3 = st.columns(3)
                 
                 with col1:
-                    st.metric("Total Fields", len(field_data))
+                    st.metric("Total Extracted Fields", len(field_data))
                 with col2:
-                    confidences = [f["confidence"] for f in field_data if isinstance(f["confidence"], int)]
-                    if confidences:
-                        high_conf = sum(1 for c in confidences if c >= 90)
-                        st.metric("High Confidence", high_conf)
-                    else:
-                        st.metric("High Confidence", "N/A")
+                    # High confidence = fields meeting the validation threshold
+                    st.metric("High Confidence (≥threshold)", len(validated))
                 with col3:
-                    if confidences:
-                        avg_conf = np.mean(confidences)
-                        st.metric("Average Confidence", f"{avg_conf:.1f}%")
+                    # Average of validated fields (same as summary above)
+                    validated_confidences = validated['confidence'].dropna()
+                    validated_confidences = pd.to_numeric(validated_confidences, errors='coerce').dropna()
+                    if len(validated_confidences) > 0:
+                        avg_conf = validated_confidences.mean()
+                        st.metric("Avg Confidence (Validated)", f"{avg_conf:.1f}%")
                     else:
-                        st.metric("Average Confidence", "N/A")
+                        st.metric("Avg Confidence (Validated)", "N/A")
                 
                 # Export options (use final values)
                 st.subheader("💾 Export Data")
