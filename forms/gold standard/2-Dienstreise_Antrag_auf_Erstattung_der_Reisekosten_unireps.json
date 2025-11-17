@@ -1,0 +1,362 @@
+
+{
+  "travel_expense_reimbursement_application": {
+    "title": "Antrag auf Erstattung der Reisekosten (ggf. Beiblatt verwenden)",
+    "date_received": {
+      "label": "Eingegangen am:",
+      "value": null
+    },
+    "applicant_details": {
+      "name": {
+        "label": "Antragstellerin/Antragsteller (Name, Vorname)",
+        "value": null
+      },
+      "address": {
+        "label": "Straße, Haus-Nr.",
+        "value": null
+      },
+      "city": {
+        "label": "Postleitzahl, Ort",
+        "value": null
+      }
+    },
+    "bank_details": {
+      "iban": {
+        "label": "Bankverbindung - IBAN",
+        "value": null
+      },
+      "bic": {
+        "label": "BIC",
+        "value": null
+      }
+    },
+    "household_at_location": {
+      "label": "Eigener Hausstand am Geschäftsort (Wohnung mit Kochgelegenheit, die zur Zubereitung warmer Mahl-zeiten benutzt wird und mit eigenen Möbeln sowie sonstigen Haushaltsgegenständen ausgestattet ist):",
+      "options": [
+        {
+          "label": "ja",
+          "checked": false
+        },
+        {
+          "label": "nein",
+          "checked": true
+        }
+      ]
+    },
+    "reimbursement_details_table": [
+      {
+        "separation_allowance": null,
+        "travel_details": "9.12.2023. \n 4:00 Uhr \n ☐ \n Wohnung \n ☑ Dienststelle \n Zug, Flugzeug \n Passau \n New Orleans, USA \n Geschäftsort \n 10.12.2023 \n 10 \n Uhr",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": "b) 600,24",
+        "mileage_allowance": null,
+        "incidental_cost": "445,46 (Konfere"
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "des \n Dienstgeschäfts \n am \n 16.12.2023",
+        "per_diem": null,
+        "accommodation_cost": "b) 792,46",
+        "travel_cost": "b) 19,05",
+        "mileage_allowance": "23,23",
+        "incidental_cost": "20,74 (ESTA)"
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "Ende \n des \n Dienstgeschäfts \n um \n 19 \n Uhr",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": "b) 60,62",
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "Fahrkosten am \n Geschäftsort für die \n gesamte Dauer des \n Aufenthaltes: \n ☑ \n Privat-Kfz \n Lyft \n ☐",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": "b) 14,34",
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": ". Rückreise \n am \n Rückreise \n um \n 19.12.2023 \n 8:30 \n Uhr",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": "b) 32,44",
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "Verkehrsmittel \n Flugzeug, Zug....",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": "b) 20,85",
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "von \n New Orleans, USA",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": null,
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "nach \n Passau \n Ankunft an der \n ☑ Wohnung \n ☐ \n Dienststelle",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": null,
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "am \n 20.12.2023 \n um \n 11.30 Uhr",
+        "per_diem": null,
+        "accommodation_cost": null,
+        "travel_cost": null,
+        "mileage_allowance": null,
+        "incidental_cost": null
+      },
+      {
+        "separation_allowance": null,
+        "travel_details": "Summe",
+        "per_diem": "600,24",
+        "accommodation_cost": "939,76",
+        "travel_cost": null,
+        "mileage_allowance": null,
+        "incidental_cost": "466,20"
+      }
+    ],
+    "reimbursement_deadline_note": "Hinweis: Die Dienstreisegenehmigung im Original ist immer beizufügen. Reisekosten können nur bei Abrechnung innerhalb von 6 Monaten erstattet werden.",
+    "foreign_travel": {
+      "section_label": "IV. Auslandsreise",
+      "border_crossing_label": "Ort, Datum und Uhrzeit der einzelnen Grenzübertritte/Landungen",
+      "departure": {
+        "label": "Hinreise:",
+        "value": "Charlotte, 9.12.2023, ca 14:40 lokale Zeit"
+      },
+      "return": {
+        "label": "Rückreise:",
+        "value": "München, 20.12.2023, ca 8:00 lokale Zeit"
+      }
+    },
+    "benefits_received": {
+      "section_label": "V. Zuwendungen",
+      "intro_text": "Im Zusammenhang mit dieser Reise erhielt ich",
+      "travel_cost_reimbursement": {
+        "label": "Fahrkostenerstattung",
+        "options": [
+          {
+            "label": "nein",
+            "checked": false
+          },
+          {
+            "label": "ja, in Höhe von",
+            "checked": false
+          }
+        ],
+        "for": {
+          "label": "für",
+          "value": null
+        }
+      },
+      "free_accommodation": {
+        "label": "kostenlose Übernachtung",
+        "options": [
+          {
+            "label": "nein",
+            "checked": true
+          },
+          {
+            "label": "ja, von Amts wegen am/vom",
+            "checked": false
+          },
+          {
+            "label": "ja, privat am/vom",
+            "checked": false
+          }
+        ]
+      },
+      "free_meals_general": {
+        "label": "unentgeltliche Verpflegung",
+        "breakfast": {
+          "label": "Frühstück",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        },
+        "lunch": {
+          "label": "Mittag",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        },
+        "dinner": {
+          "label": "Abend",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        }
+      },
+      "meals_on_plane": {
+        "label": "Mahlzeiten im Flugzeug",
+        "breakfast": {
+          "label": "Frühstück",
+          "options": [
+            {
+              "label": "nein",
+              "checked": false
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": true
+            }
+          ],
+          "value": "20.12."
+        },
+        "lunch": {
+          "label": "Mittag",
+          "options": [
+            {
+              "label": "nein",
+              "checked": false
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": true
+            }
+          ],
+          "value": "10.12, 19.12."
+        },
+        "dinner": {
+          "label": "Abend",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        }
+      },
+      "meals_in_conference_fee": {
+        "label": "in Tagungsgebühr enthalten",
+        "accommodation": {
+          "label": "Übernachtung",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        },
+        "breakfast": {
+          "label": "Frühstück",
+          "options": [
+            {
+              "label": "nein",
+              "checked": false
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": true
+            }
+          ],
+          "value": "10.12.2023 bis 16.12.2023"
+        },
+        "lunch": {
+          "label": "Mittag",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        },
+        "dinner": {
+          "label": "Abend",
+          "options": [
+            {
+              "label": "nein",
+              "checked": true
+            },
+            {
+              "label": "ja, am/vom",
+              "checked": false
+            }
+          ]
+        }
+      }
+    },
+    "explanations": {
+      "label": "VI. Erläuterungen (gegebenenfalls auf gesondertem Blatt erläutern):",
+      "value": "siehe beiliegendes Blatt"
+    },
+    "advance_payment": {
+      "label": "Ich habe einen Abschlag erhalten:",
+      "options": [
+        {
+          "label": "nein",
+          "checked": false
+        },
+        {
+          "label": "ja, und zwar in Höhe von Euro",
+          "checked": true
+        }
+      ],
+      "value": "2200"
+    },
+    "declaration": {
+      "statement": "Meine Angaben sind richtig und vollständig. Zahlen Sie bitte auf oben genanntes Konto. Die Hinweise zum Datenschutz habe ich gelesen.",
+      "location_date": {
+        "label": "Ort, Datum",
+        "value": null
+      },
+      "signature": {
+        "label": "Unterschrift",
+        "value": null
+      },
+      "privacy_note": "Informationen zur Verarbeitung Ihrer Daten und zu Ihren diesbezüglichen Rechten erhalten Sie auf unserer Homepage unter Beschäftigte - Personal von A bis Z-Dienst- und Fortbildungsreisen - Datenschutzinformationen zu Reisekosten\"."
+    }
+  }
+}

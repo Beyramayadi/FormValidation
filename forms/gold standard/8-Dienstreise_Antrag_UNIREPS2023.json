@@ -1,0 +1,329 @@
+{
+  "travel_expense_application": {
+    "application_for_approval_of_a": {
+      "type": {
+        "business_trip": true,
+        "training_trip": false
+      },
+      "from_date": {
+        "label": "am/vom (Datum)",
+        "value": "9.12.2023"
+      },
+      "to_date": {
+        "label": "bis (Datum)",
+        "value": "17.12.2023"
+      },
+      "duration": {
+        "value": "9",
+        "unit": "Tag(e)"
+      },
+      "business_location_purpose": {
+        "label": "Geschäftsort(e), Reisezweck (Bitte Programm, Einladung o.ä. beifügen)",
+        "value": "Unireps Workshop bei Konferenz NeurIPS 2023, New Orleans, USA\nPräsentation einer wissenschaftlichen Abhandlung\nhttps://unireps.org/, https://neurips.cc/Conferences/2023"
+      },
+      "no_documents_available": {
+        "label": "keine Unterlagen vorhanden",
+        "checked": true
+      },
+      "business_trip_time": {
+        "label": "Dienstgeschäft (Datum, Uhrzeit)",
+        "begin": {
+          "label": "Beginn:",
+          "date": "10.12.2023",
+          "time": "10:00 h"
+        },
+        "end": {
+          "label": "Ende:",
+          "date": "16.12.2023",
+          "time": "20:00 h"
+        }
+      },
+      "departure_location": {
+        "label": "Abreiseort:",
+        "options": [
+          {
+            "label": "Wohnung",
+            "checked": true
+          },
+          {
+            "label": "Dienststelle",
+            "checked": false
+          }
+        ]
+      },
+      "daily_return_possible": {
+        "label": "tägliche Rückkehr möglich ?",
+        "options": [
+          {
+            "label": "ja",
+            "checked": false
+          },
+          {
+            "label": "nein",
+            "checked": true
+          }
+        ]
+      }
+    },
+    "applicant": {
+      "label": "Antragstellerin/Antragsteller (Name, Vorname, Anschrift)",
+      "name_address": {
+        "value": "Klabunde, Max, Ingling 68 4784 Schardenberg"
+      },
+      "institution": {
+        "label": "Einrichtung an der Universität Passau",
+        "value": "Professur für Angewandtes Maschinelles Lernen"
+      },
+      "official_phone": {
+        "label": "Tel. dienstlich",
+        "value": "3933"
+      }
+    },
+    "fellow_travelers": {
+      "label": "Mitreisende (Name, Vorname)",
+      "value": null
+    },
+    "reason_for_multiple_participants": {
+      "label": "Begründung für die Notwendigkeit der Teilnahme mehrerer Personen an der Reise:",
+      "value": null
+    },
+    "transportation": {
+      "german_rail": {
+        "label": "Deutsche Bahn (Kunden-Nr. 7200266)",
+        "checked": true
+      },
+      "bahncard_business": {
+        "label": "BahnCard Business (mit Kunden-Nr. kombinierbar)",
+        "checked": false
+      },
+      "private_bahncard": {
+        "label": "private BahnCard",
+        "checked": false
+      },
+      "official_car": {
+        "label": "Dienst-Pkw",
+        "checked": false
+      },
+      "ride_with": {
+        "label": "Mitfahrt bei",
+        "checked": false
+      },
+      "flight": {
+        "label": "Flugzeug",
+        "checked": true
+      },
+      "rental_car": {
+        "label": "Mietfahrzeug",
+        "checked": false
+      },
+      "private_car_no_valid_reason": {
+        "label": "privates Kfz ohne triftigen Grund",
+        "checked": false
+      },
+      "private_car_valid_reason": {
+        "label": "privates Kfz aus folgendem triftigen Grund",
+        "checked": false
+      },
+      "reasons_for_private_car": [
+        {
+          "label": "Reiseziele mit regelmäßig verkehrenden Beförderungsmitteln zeitgerecht nicht erreichbar",
+          "checked": false
+        },
+        {
+          "label": "Mitnahme von weiteren Dienstreisenden",
+          "checked": false
+        },
+        {
+          "label": "Mitnahme von mehr als 10 kg oder sperrigem Gepäck",
+          "checked": false
+        },
+        {
+          "label": "Sonstiges:",
+          "checked": false
+        }
+      ]
+    },
+    "travel_expenses": {
+      "advance_payment_requested": {
+        "label": "Es wird ein Abschlag in Höhe von",
+        "value": "2200",
+        "currency": "€",
+        "checked": true
+      },
+      "waive_travel_expenses": {
+        "label": "Auf Reisekosten wird verzichtet.",
+        "checked": false
+      },
+      "waiver_partially_applies_to": {
+        "label": "Der Verzicht erfolgt teilweise bei",
+        "options": [
+          {
+            "label": "Beförderung",
+            "checked": false
+          },
+          {
+            "label": "Unterkunft",
+            "checked": false
+          },
+          {
+            "label": "Verpflegung",
+            "checked": false
+          }
+        ]
+      },
+      "financing_project": {
+        "label": "Finanzierung zu Lasten des Projektes (ggf. Kostenstelle):",
+        "checked": false
+      },
+      "financing_tg73": {
+        "label": "Finanzierung aus TG 73",
+        "checked": true
+      },
+      "reimbursement_third_party": {
+        "label": "Reisekosten werden von dritter Seite erstattet:",
+        "options": [
+          {
+            "label": "teilweise",
+            "checked": false
+          },
+          {
+            "label": "vollständig",
+            "checked": false
+          }
+        ]
+      },
+      "provided_free_of_charge_during_trip": {
+        "label": "Während der Reise werden von Amts wegen unentgeltlich gewährt:",
+        "options": [
+          {
+            "label": "Unterkunft",
+            "checked": false
+          },
+          {
+            "label": "Verpflegung",
+            "checked": false
+          }
+        ]
+      },
+      "declaration_accuracy_completeness": {
+        "label": "Ich versichere die Richtigkeit und Vollständigkeit meiner Angaben. Die Hinweise zum Datenschutz habe ich gelesen.",
+        "checked": true
+      }
+    },
+    "declaration_of_official_duty": {
+      "label": "Ich erkläre auf Dienstpflicht: (nur von Professorinnen/Professoren auszufüllen)",
+      "teaching_not_affected": {
+        "label": "Meine Lehrveranstaltungen sind durch die Dienstreise nicht berührt (weder Vertretung, Verlegung noch Ausfall).",
+        "checked": true
+      },
+      "teaching_affected": {
+        "label": "Eine Vertretung/Verlegung meiner Lehrveranstaltungen ist erforderlich. Die Termine wurden der Dekanin/dem Dekan angezeigt.",
+        "checked": false
+      },
+      "confirmation_necessity_economy": {
+        "label": "Bestätigung der dienstl. Notwendigkeit und Wirtschaftlichkeit",
+        "checked": false
+      }
+    },
+    "applicant_signature": {
+      "date": {
+        "label": "Datum",
+        "value": null
+      },
+      "signature": {
+        "label": "Unterschrift Antragstellerin/Antragsteller",
+        "value": null
+      }
+    },
+    "supervisor_signature": {
+      "date": {
+        "label": "Datum",
+        "value": null
+      },
+      "signature": {
+        "label": "Unterschrift Vorgesetzte/Vorgesetzter",
+        "value": null
+      }
+    },
+    "return_to_applicant": {
+      "label": "Zurück an Antragstellerin/Antragsteller",
+      "trip_approved_as": {
+        "label": "Die Reise wird genehmigt als",
+        "options": [
+          {
+            "label": "Bahn",
+            "checked": false
+          },
+          {
+            "label": "Flugzeug",
+            "checked": false
+          },
+          {
+            "label": "eigenem Kfz (ohne Vorliegen triftiger Gründe).",
+            "checked": false
+          },
+          {
+            "label": "eigenem Kfz (triftige Gründe für die Kfz-Benutzung werden anerkannt).",
+            "checked": false
+          },
+          {
+            "label": "Mitfahrt bei",
+            "checked": false
+          }
+        ]
+      },
+      "trip_type": [
+        {
+          "label": "Dienstreise",
+          "checked": false
+        },
+        {
+          "label": "Fortbildungsreise",
+          "checked": false
+        }
+      ],
+      "vehicle_type": [
+        {
+          "label": "Mietfahrzeug",
+          "checked": false
+        },
+        {
+          "label": "Dienst-Kfz",
+          "checked": false
+        }
+      ],
+      "not_approved": {
+        "label": "nicht genehmigt",
+        "checked": false
+      },
+      "approval_not_required": {
+        "label": "Genehmigung nicht erforderlich",
+        "checked": false
+      }
+    },
+    "budget_execution": {
+      "booking_office": {
+        "label": "Haushaltsvollzug: Buchungsstelle:",
+        "value": null
+      },
+      "cost_center": {
+        "label": "Kostenstelle:",
+        "value": null
+      }
+    },
+    "place_date": {
+      "place": {
+        "label": "Passau,",
+        "value": "Passau"
+      },
+      "date": {
+        "label": "den",
+        "value": null
+      }
+    },
+    "supervisor_signature_bottom": {
+      "label": "(Unterschrift des Dienstvorgesetzten)",
+      "value": null
+    }
+  }
+}

@@ -1,0 +1,598 @@
+{
+  "travel_expense_report": {
+    "traveler_information": {
+      "last_name_first_name": {
+        "label": "Last name, first name",
+        "value": "Foulen ben foulen"
+      },
+      "official_job_title": {
+        "label": "official job title",
+        "value": "Student"
+      },
+      "office": {
+        "label": "office",
+        "value": "Ma aandouch"
+      },
+      "location": {
+        "label": "location",
+        "value": "Passau"
+      },
+      "place_of_residence": {
+        "label": "place of residence",
+        "value": "Passau"
+      },
+      "family_place_of_residence": {
+        "label": "family place of residence",
+        "value": "Passau"
+      }
+    },
+    "order_approval_of_the_business_trip": {
+      "dated": {
+        "label": "dated",
+        "value": "23.01.2024"
+      },
+      "by": {
+        "label": "by",
+        "value": "Foulena ben foulen"
+      },
+      "travel_to_start_employment": {
+        "label": "Travel to start employment",
+        "checked": false
+      },
+      "new_job": {
+        "label": "new job",
+        "checked": true
+      },
+      "relocation": {
+        "label": "relocation",
+        "checked": false
+      },
+      "delegation": {
+        "label": "delegation",
+        "checked": false
+      },
+      "end_of_delegation": {
+        "label": "end of delegation",
+        "checked": false
+      }
+    },
+    "business_trip_duration_options": {
+      "option_1": {
+        "label": "I am married and live with my spouse in the same household (§ 3 para 2.1 LTGVO)",
+        "checked": false
+      },
+      "option_2": {
+        "label": "No. 1 does not apply, but I have my own household as main tenant or owner of a property (§ 3 para 2.2 LTGVO)",
+        "checked": false
+      },
+      "option_3": {
+        "label": "No. 1 and 2 do not apply, e. g. singles without own household (§ 3 para 2.3 LTGVO)",
+        "checked": false
+      }
+    },
+    "advance_payment": {
+      "i_have_received_advance_payment_of_eur": {
+        "label": "I have received advance payment of EUR",
+        "value": "120"
+      },
+      "from": {
+        "label": "from",
+        "value": "passau"
+      }
+    },
+    "payment_request": {
+      "i_request": {
+        "label": "I request",
+        "checked": false
+      },
+      "cash_payment": {
+        "label": "cash payment",
+        "checked": false
+      },
+      "bank_transfer_to": {
+        "label": "bank transfer to",
+        "checked": true
+      },
+      "iban": {
+        "label": "IBAN",
+        "value": null
+      },
+      "bic": {
+        "label": "BIC",
+        "value": null
+      },
+      "account_holder": {
+        "label": "account holder",
+        "value": null
+      }
+    },
+    "declaration": {
+      "i_have_my_no_own_household": {
+        "label": "I have my - no own household (§7 para. 3 LUKG).",
+        "checked": false
+      },
+      "i_declare_that_the_information_i_have_given_is_complete_and_correct": {
+        "label": "I declare that the information I have given is complete and correct.",
+        "checked": false
+      },
+      "date_signature": {
+        "label": "date, signature",
+        "value": null
+      }
+    },
+    "header_table": {
+      "rows": [
+        {
+          "jahr": {
+            "label": "Jahr",
+            "value": null
+          },
+          "kapitel": {
+            "label": "Kapitel",
+            "value": null
+          },
+          "titel": {
+            "label": "Titel",
+            "value": null
+          },
+          "ut": {
+            "label": "UT",
+            "value": null
+          },
+          "kto_ebene_1": {
+            "label": "Kto.-Ebene 1",
+            "value": null
+          }
+        },
+        {
+          "ausgabeart": {
+            "label": "Ausgabeart",
+            "value": "KOA"
+          },
+          "eur": {
+            "label": "EUR",
+            "value": null
+          }
+        },
+        {
+          "zahlungspartner_nr": {
+            "label": "Zahlungspartner-Nr.",
+            "value": null
+          },
+          "festlegungs_nr": {
+            "label": "Festlegungs-Nr.",
+            "value": null
+          }
+        },
+        {
+          "beleg_nr": {
+            "label": "Beleg-Nr.",
+            "value": "HÜL"
+          }
+        }
+      ]
+    },
+    "kassenanweisung": {
+      "to_be_paid_to_employee": {
+        "label": "sind an den Bediensteten auszuzahlen und zu buchen",
+        "checked": true
+      },
+      "to_be_received_from_employee": {
+        "label": "sind vom Bediensteten anzunehmen und — durch Absetzen von der Ausgabe — zu buchen",
+        "checked": false
+      },
+      "i_b_eur": {
+        "label": "i. B. EUR",
+        "value": null
+      },
+      "ct": {
+        "label": "ct",
+        "value": null
+      },
+      "konstanz_den": {
+        "label": "Konstanz, den",
+        "value": null
+      },
+      "signature_of_authorizing_officer": {
+        "label": "(Unterschrift des Anordnungsbefugten)",
+        "value": null
+      },
+      "eur": {
+        "label": "EUR",
+        "value": null
+      }
+    }
+  },
+  "information_for_filling_in_the_back": {
+    "item_1": "Please describe the actual course of the business trip (see Commentary). Please indicate the start and end of business for each individual place of business.",
+    "item_2": "Travel abroad: please exactly indicate the time you crossed a border.",
+    "item_3": "Please attach the original public transport receipts (train, plane, bus) exceeding EUR 10,- in total.",
+    "item_4": "Please give the reasons why you had to use other transport means (e.g. taxi, rental car) and attach receipts.",
+    "item_5": "Additional expenses might be e. g.: taking along or shipping luggage (business or private), luggage storage, parking fees if the car was used with good reason, attendance fees, telephone charges (business matters). Please attach receipts. The following are not additional expenses: the usual travel equipment, value reduction of clothes and suitcases, insurance premiums, tips, newspapers etc.",
+    "item_6": "If you request more than the usual overnight allowance, please state a reason.",
+    "item_7": "Please claim reimbursement for travel costs within six months after the end of the trip. Otherwise your entitlement expires."
+  },
+  "travelers_fill_in_bold_framed_box_only_submit_original_receipts_only": {
+    "commentary": {
+      "text": "e. g. deviations from the travel application. Details about using a personal season ticket, or discounts for parts or the entire travel route, or travelling as passenger in the car of another person. Business trip related to secondary employment (§ 3 para. 4 LRKG), time of crossing a border (if travelling abroad)."
+    },
+    "using_your_own_car": {
+      "car_up_to_600_cc": {
+        "label": "car up to 600 cc",
+        "checked": false
+      },
+      "cars_over_600_cc": {
+        "label": "cars over 600 cc",
+        "checked": false
+      },
+      "trip_to_destination_and_back_km": {
+        "label": "Trip to destination and back",
+        "value": null
+      },
+      "at_the_business_location_km": {
+        "label": "At the business location",
+        "value": null
+      },
+      "sum_km": {
+        "label": "Sum",
+        "value": null
+      },
+      "passengers_in_my_car_km": {
+        "label": "Passengers in my car:",
+        "value": null
+      },
+      "passenger_in_the_car_of": {
+        "label": "Passenger in the car of:",
+        "value": null
+      }
+    },
+    "start_of_trip": {
+      "on": {
+        "label": "on",
+        "value": null
+      },
+      "at_time": {
+        "label": "at",
+        "value": null
+      },
+      "my_house": {
+        "label": "my house",
+        "checked": false
+      },
+      "the_office_location": {
+        "label": "the office location",
+        "checked": false
+      },
+      "somewhere_else": {
+        "label": "somewhere else",
+        "checked": false
+      }
+    },
+    "public_transportation": {
+      "start_of_trip": {
+        "from": {
+          "label": "from",
+          "value": null
+        },
+        "to": {
+          "label": "to",
+          "value": null
+        },
+        "at_time": {
+          "label": "at",
+          "value": null
+        }
+      },
+      "arrival_on": {
+        "label": "arrival on",
+        "value": null
+      },
+      "arrival_at_time": {
+        "label": "at",
+        "value": null
+      },
+      "time_of_crossing_a_border_country_of_business_place": {
+        "label": "Time of crossing a border (country of business place)",
+        "value": null
+      },
+      "travel_abroad": {
+        "label": "travel abroad",
+        "value": null
+      },
+      "start_of_business": {
+        "on": {
+          "label": "on",
+          "value": null
+        },
+        "at_time": {
+          "label": "at",
+          "value": null
+        }
+      },
+      "end_of_business": {
+        "on": {
+          "label": "on",
+          "value": null
+        },
+        "at_time": {
+          "label": "at",
+          "value": null
+        }
+      },
+      "means_of_transport_amount": {
+        "at_my_house": {
+          "label": "at my house/",
+          "checked": false
+        },
+        "bus_street_railway": {
+          "label": "bus, street railway",
+          "checked": false
+        },
+        "place_of_business": {
+          "label": "place of business",
+          "checked": false
+        },
+        "other": {
+          "label": "other",
+          "checked": false
+        },
+        "taxi": {
+          "label": "taxi",
+          "checked": false
+        },
+        "reason_for_taxi": {
+          "no_public_transport_at_this_time": {
+            "label": "no public transport at this time",
+            "checked": false
+          },
+          "no_pub_transport_to_the_place_of_business": {
+            "label": "no pub. transport to the place of business",
+            "checked": false
+          },
+          "would_otherwise_not_have_reached_destination_in_time": {
+            "label": "would otherwise not have reached destination in time",
+            "checked": false
+          },
+          "a_lot_of_luggage": {
+            "label": "a lot of luggage",
+            "checked": false
+          }
+        }
+      },
+      "trip_to_destination_and_back": {
+        "train": {
+          "label": "train",
+          "checked": false
+        },
+        "plane": {
+          "label": "plane",
+          "checked": false
+        },
+        "staff_car": {
+          "label": "staff car",
+          "checked": false
+        },
+        "ferry": {
+          "label": "ferry",
+          "checked": false
+        },
+        "sum": {
+          "label": "Sum",
+          "value": null
+        }
+      }
+    },
+    "accommodation_costs": {
+      "hotel_room": {
+        "label": "Hotel room:",
+        "value": null
+      },
+      "breakfast_included": {
+        "label": "breakfast included",
+        "checked": false
+      },
+      "without_breakfast": {
+        "label": "without breakfast",
+        "checked": false
+      },
+      "full_half_board": {
+        "label": "full/half board",
+        "checked": false
+      },
+      "reason_for_hotel_costs": {
+        "close_to_place_of_business_less_travel_costs": {
+          "label": "close to place of business, less travel costs",
+          "checked": false
+        },
+        "no_cheaper_rooms_were_available_due_to_a_large_event": {
+          "label": "No cheaper rooms were available due to a large event",
+          "checked": false
+        },
+        "all_conference_participants_were_accommodated_in_same_hotel": {
+          "label": "All conference participants were accommodated in same hotel",
+          "checked": false
+        },
+        "event_organiser_booked_rooms_at_a_special_rate": {
+          "label": "Event organiser booked rooms at a special rate",
+          "checked": false
+        },
+        "business_trip_was_decided_at_short_notice": {
+          "label": "Business trip was decided at short notice",
+          "checked": false
+        }
+      },
+      "other_accommodation": {
+        "private_entitled_to_overnight_allowance": {
+          "label": "private (entitled to overnight allowance)",
+          "checked": false
+        },
+        "free_accommodation_no_allowance": {
+          "label": "free accommodation (no allowance)",
+          "checked": false
+        },
+        "breakfast_included_other": {
+          "label": "breakfast included",
+          "checked": false
+        },
+        "without_breakfast_other": {
+          "label": "without breakfast",
+          "checked": false
+        }
+      }
+    },
+    "end_of_trip": {
+      "on": {
+        "label": "on",
+        "value": null
+      },
+      "at_time": {
+        "label": "at",
+        "value": null
+      },
+      "my_house": {
+        "label": "my house",
+        "checked": false
+      },
+      "the_office_location": {
+        "label": "the office location",
+        "checked": false
+      },
+      "somewhere_else": {
+        "label": "somewhere else",
+        "checked": false
+      }
+    },
+    "additional_expenses": {
+      "participation_fee": {
+        "label": "Participation fee",
+        "checked": false
+      },
+      "including": {
+        "accommodation": {
+          "label": "accommodation",
+          "checked": false
+        },
+        "breakfast": {
+          "label": "breakfast",
+          "checked": false
+        },
+        "lunch": {
+          "label": "lunch",
+          "checked": false
+        },
+        "dinner": {
+          "label": "dinner",
+          "checked": false
+        }
+      },
+      "nothing": {
+        "label": "nothing",
+        "checked": false
+      },
+      "other_additional_expenses": {
+        "label": "other additional expenses",
+        "value": null
+      }
+    },
+    "grants_from_third_parties": {
+      "label": "Grants from third parties:",
+      "value": null
+    },
+    "further_commentary": {
+      "label": "Further commentary:",
+      "value": null
+    },
+    "kostenberechnung_der_verwaltung": {
+      "table": [
+        {
+          "label": "Tagegeld",
+          "x": null,
+          "eur": null,
+          "ct": null
+        },
+        {
+          "label": "Tagegeld",
+          "x": null,
+          "eur": null,
+          "ct": null
+        },
+        {
+          "label": "Übernachtungsgeld",
+          "x": null,
+          "eur": null,
+          "ct": null
+        },
+        {
+          "label": "Übernachtungsgeld",
+          "x": null,
+          "eur": null,
+          "ct": null
+        },
+        {
+          "label": "Fahrkosten",
+          "eur": null,
+          "ct": null
+        },
+        {
+          "label": "Wegstreckenentschädigg.",
+          "km_zu": null,
+          "ct": null
+        },
+        {
+          "label": "Mitnahmeentschädigung",
+          "km_zu": null,
+          "ct": null
+        },
+        {
+          "label": "Nebenkosten",
+          "eur": null,
+          "ct": null
+        }
+      ],
+      "mehrbetrag_zum_uebernachtungsgeld": {
+        "label": "Mehrbetrag zum Übernachtungsgeld",
+        "value": null
+      },
+      "uebertrag": {
+        "label": "Übertrag",
+        "value": null
+      },
+      "uebertrag_right": {
+        "label": "Übertrag",
+        "value": null
+      },
+      "anzurechnen_zuwendungen_3_abs_3_lrkg": {
+        "label": "Anzurechnen: Zuwendungen (§ 3 Abs.3 LRKG)",
+        "value": null
+      },
+      "kuerzungen_nach_12_lrkg": {
+        "label": "Kürzungen nach § 12 LRKG",
+        "value": null
+      },
+      "kuerzung_vh_23_abs_2": {
+        "label": "Kürzung v.H.(§ 23 Abs.2)",
+        "value": null
+      },
+      "abschlag_vom": {
+        "label": "/ Abschlag vom",
+        "value": null
+      },
+      "auszuzahlen_einzuziehen": {
+        "label": "auszuzahlen einzuziehen",
+        "value": null
+      },
+      "sachlich_richtig": {
+        "label": "Sachlich richtig",
+        "value": null
+      },
+      "rechnerisch_richtig": {
+        "label": "Rechnerisch richtig",
+        "value": null
+      },
+      "unterschrift_amtsbezeichnung_verg_gruppe": {
+        "label": "Unterschrift, Amtsbezeichnung/Verg.-Gruppe)",
+        "value": null
+      }
+    }
+  }
+}

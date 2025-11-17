@@ -1,0 +1,331 @@
+{
+  "form_title": "Application for Approval of a Business Trip / Training Trip",
+  "header_info": {
+    "date_of_status": "22.10.2024",
+    "reimbursement_note": "Travel expenses can only be reimbursed if settled within 6 months. Otherwise, advance payments must also be repaid."
+  },
+  "application_for_approval_of_a": {
+    "type": {
+      "business_trip": {
+        "label": "Dienstreise",
+        "checked": true
+      },
+      "training_trip": {
+        "label": "Fortbildungsreise",
+        "checked": false
+      }
+    },
+    "from": {
+      "label": "am/vom (Datum)",
+      "value": "21.4.25"
+    },
+    "to": {
+      "label": "bis (Datum)",
+      "value": "3.5.25"
+    },
+    "duration": {
+      "label": "Tag(e)",
+      "value": "13"
+    },
+    "documents_available": {
+      "label": "keine Unterlagen vorhanden",
+      "checked": false
+    },
+    "business_location_purpose": {
+      "label": "Geschäftsort(e), Reisezweck (Bitte Programm, Einladung o.ä. beifügen)",
+      "value": "International Conference on Learning Representations (ICLR), Singapur, Präsentation einer wissenschaftlichen Abhandlung, https://iclr.cc/"
+    },
+    "business_trip_dates": {
+      "label": "Dienstgeschäft (Datum, Uhrzeit)",
+      "begin": {
+        "label": "Beginn:",
+        "date": "24.4.25",
+        "time": "8",
+        "time_unit": "h"
+      },
+      "end": {
+        "label": "Ende:",
+        "date": "28.4.25",
+        "time": "20",
+        "time_unit": "h"
+      }
+    },
+    "departure_location": {
+      "label": "Abreiseort:",
+      "residence": {
+        "label": "Wohnung",
+        "checked": true
+      },
+      "office": {
+        "label": "Dienststelle",
+        "checked": false
+      }
+    },
+    "daily_return_possible": {
+      "label": "tägliche Rückkehr möglich ?",
+      "yes": {
+        "label": "ja",
+        "checked": false
+      },
+      "no": {
+        "label": "nein",
+        "checked": true
+      }
+    }
+  },
+  "applicant_information": {
+    "label": "Antragstellerin/Antragsteller (Name, Vorname, Anschrift)",
+    "name_address": {
+      "label": null,
+      "value": "Klabunde, Max, Ingling 68 4784 Schardenberg"
+    },
+    "institution_at_university_passau": {
+      "label": "Einrichtung an der Universität Passau",
+      "value": "Professur für Angewandtes Maschinelles Lernen"
+    },
+    "building_room_for_return": {
+      "label": "Gebäude/Raum (für Rücksendung)",
+      "value": "ITZ 255"
+    },
+    "fellow_travelers": {
+      "label": "Mitreisende (Name, Vorname)",
+      "value": null
+    },
+    "reason_for_multiple_travelers": {
+      "label": "Begründung für die Notwendigkeit der Teilnahme mehrerer Personen an der Reise:",
+      "value": null
+    }
+  },
+  "transportation": {
+    "label": "Verkehrsmittel",
+    "german_rail": {
+      "label": "Deutsche Bahn (Kunden-Nr. 7200266)",
+      "checked": false
+    },
+    "bahncard_business": {
+      "label": "BahnCard Business (mit Kunden-Nr. kombinierbar)",
+      "checked": false
+    },
+    "private_bahncard": {
+      "label": "private BahnCard",
+      "checked": false
+    },
+    "deutschlandticket": {
+      "label": "Deutschlandticket",
+      "checked": false
+    },
+    "company_car": {
+      "label": "Dienst-Pkw",
+      "checked": false
+    },
+    "ride_along": {
+      "label": "Mitfahrt bei",
+      "checked": false
+    },
+    "airplane": {
+      "label": "Flugzeug",
+      "checked": true
+    },
+    "rental_car": {
+      "label": "Mietfahrzeug",
+      "checked": false
+    },
+    "private_car_no_valid_reason": {
+      "label": "privates Kfz ohne triftigen Grund",
+      "checked": false
+    },
+    "private_car_valid_reason": {
+      "label": "privates Kfz aus folgendem triftigen Grund",
+      "checked": false
+    },
+    "reasons_for_private_car": {
+      "destinations_not_reachable_on_time": {
+        "label": "Reiseziele mit regelmäßig verkehrenden Beförderungsmitteln zeitgerecht nicht erreichbar",
+        "checked": false
+      },
+      "taking_additional_travelers": {
+        "label": "Mitnahme von weiteren Dienstreisenden",
+        "checked": false
+      },
+      "taking_more_than_10kg_or_bulky_luggage": {
+        "label": "Mitnahme von mehr als 10 kg oder sperrigem Gepäck",
+        "checked": false
+      },
+      "other": {
+        "label": "Sonstiges:",
+        "checked": false,
+        "value": null
+      }
+    },
+    "transportation_reason": {
+      "label": "→ Begründung:",
+      "value": null
+    }
+  },
+  "travel_expenses": {
+    "label": "Reisekosten",
+    "advance_payment_requested": {
+      "label": "Es wird ein Abschlag in Höhe von",
+      "amount": "2650",
+      "currency": "€",
+      "checked": true
+    },
+    "no_travel_expenses": {
+      "label": "Auf Reisekosten wird verzichtet.",
+      "checked": false
+    },
+    "partial_waiver": {
+      "label": "Der Verzicht erfolgt teilweise bei",
+      "checked": false
+    },
+    "funding_by_project": {
+      "label": "Finanzierung zu Lasten des Projektes (ggf. Kostenstelle):",
+      "checked": false,
+      "value": null
+    },
+    "funding_from_dr40": {
+      "label": "Finanzierung aus DR 40 (vormals TG 73)",
+      "checked": true
+    },
+    "reimbursement_by_third_party": {
+      "label": "Reisekosten werden von dritter Seite erstattet:",
+      "checked": false
+      },
+    "reimbursement_details": {
+      "transportation": {
+        "label": "Beförderung",
+        "checked": false
+      },
+      "accommodation": {
+        "label": "Unterkunft",
+        "checked": false
+      },
+      "subsistence": {
+        "label": "Verpflegung",
+        "checked": false
+      },
+      "partially": {
+        "label": "teilweise",
+        "checked": false
+      },
+      "completely": {
+        "label": "vollständig",
+        "checked": false
+      }
+    },
+    "provided_by_office_during_travel": {
+      "label": "Während der Reise werden von Amts wegen unentgeltlich gewährt:",
+      "accommodation": {
+        "label": "Unterkunft",
+        "checked": false
+      },
+      "subsistence": {
+        "label": "Verpflegung",
+        "checked": false
+      }
+    },
+    "non_eu_states_declaration": {
+      "label": "Bei Reisen in Nicht-EU-Staaten wird versichert, dass die exportkontrollrechtlichen Vorschriften eingehalten werden; weitere Informationen unter: „Universität – Leitung- und Gremien – Universitätsleitung – Büro-des-Kanzlers - Exportkontrolle“",
+      "checked": true
+    },
+    "accuracy_and_completeness_declaration": {
+      "label": "Ich versichere die Richtigkeit und Vollständigkeit meiner Angaben. Die Hinweise zum Datenschutz habe ich gelesen.",
+      "checked": true
+    }
+  },
+  "declaration_on_official_duty_professors_only": {
+    "label": "Ich erkläre auf Dienstpflicht: (nur von Professorinnen/Professoren auszufüllen)",
+    "lectures_not_affected": {
+      "label": "Meine Lehrveranstaltungen sind durch die Dienstreise nicht berührt (weder Vertretung, Verlegung noch Ausfall).",
+      "checked": true
+    },
+    "lectures_affected": {
+      "label": "Eine Vertretung/Verlegung meiner Lehrveranstaltungen ist erforderlich. Die Termine wurden der Dekanin/dem Dekan angezeigt.",
+      "checked": false
+    }
+  },
+  "confirmation_of_official_necessity_and_economic_efficiency": {
+    "label": "Bestätigung der dienstl. Notwendigkeit und Wirtschaftlichkeit",
+    "date_signature_applicant": {
+      "label": "Datum, Unterschrift Antragstellerin/Antragsteller",
+      "date": null,
+      "signature": null
+    },
+    "date_signature_supervisor": {
+      "label": "Datum, Unterschrift Vorgesetzte/Vorgesetzter",
+      "date": null,
+      "signature": null
+    }
+  },
+  "return_to_applicant": {
+    "label": "Zurück an Antragstellerin/Antragsteller",
+    "trip_approved": {
+      "label": "Die Reise wird genehmigt als",
+      "checked": false
+    },
+    "trip_not_approved": {
+      "label": "nicht genehmigt",
+      "checked": true
+    },
+    "approval_not_required": {
+      "label": "Genehmigung nicht erforderlich",
+      "checked": false
+    },
+    "approved_means_of_transport": {
+      "train": {
+        "label": "Bahn",
+        "checked": false
+      },
+      "airplane": {
+        "label": "Flugzeug",
+        "checked": false
+      },
+      "company_car": {
+        "label": "Dienst-Kfz",
+        "checked": false
+      },
+      "training_trip": {
+        "label": "Fortbildungsreise",
+        "checked": false
+      },
+      "rental_car": {
+        "label": "Mietfahrzeug",
+        "checked": false
+      },
+      "private_car_no_valid_reason": {
+        "label": "eigenem Kfz (ohne Vorliegen triftiger Gründe).",
+        "checked": false
+      },
+      "private_car_valid_reason": {
+        "label": "eigenem Kfz (triftige Gründe für die Kfz-Benutzung werden anerkannt).",
+        "checked": false
+      },
+      "ride_along": {
+        "label": "Mitfahrt bei",
+        "checked": false,
+        "value": null
+      }
+    }
+  },
+  "budget_execution": {
+    "label": "Haushaltsvollzug: Buchungsstelle:",
+    "booking_office": null,
+    "cost_center": {
+      "label": "Kostenstelle:",
+      "value": null
+    }
+  },
+  "signature_section": {
+    "passau_date": {
+      "label": "Passau, den",
+      "value": null
+    },
+    "signature_supervisor": {
+      "label": "(Unterschrift des Dienstvorgesetzten)",
+      "value": null
+    }
+  },
+  "data_protection_information": {
+    "label": "Informationen zur Verarbeitung Ihrer Daten und zu Ihren diesbezüglichen Rechten erhalten Sie auf unserer Homepage unter „Beschäftigte – Personal von A bis Z – Dienst- und Fortbildungsreisen – Datenschutzinformationen zu Reisekosten“."
+  }
+}

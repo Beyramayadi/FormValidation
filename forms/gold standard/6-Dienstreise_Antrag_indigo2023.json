@@ -1,0 +1,317 @@
+{
+  "travel_expenses_reimbursement_info": {
+    "title": "Travel expenses can only be reimbursed if settled within 6 months. Otherwise, advance payments must also be repaid.",
+    "application_for_approval_of_a": {
+      "type": {
+        "business_trip": true,
+        "training_trip": false
+      },
+      "from_date": {
+        "label": "am/vom (Datum)",
+        "value": "7.12.2023"
+      },
+      "to_date": {
+        "label": "bis (Datum)",
+        "value": "7.12.2023"
+      },
+      "number_of_days": {
+        "label": "Tag(e)",
+        "value": "1"
+      },
+      "business_location_purpose_of_travel": {
+        "label": "Geschäftsort(e), Reisezweck (Bitte Programm, Einladung o.ä. beifügen)",
+        "value": "Vernetzungsformat \"Al-Talk für Promovierende\"\nPräsentation der Forschungsrichtung\nhttps://www.kico.bayern/veranstaltungen/veranstaltungskalender/detail/ai-talk-f"
+      },
+      "no_documents_available": {
+        "label": "keine Unterlagen vorhanden",
+        "checked": false
+      },
+      "business_activity": {
+        "label": "Dienstgeschäft (Datum, Uhrzeit)",
+        "begin": {
+          "label": "Beginn:",
+          "date": "7.12.2023",
+          "time": "13:30 h"
+        },
+        "end": {
+          "label": "Ende:",
+          "date": "7.12.2023",
+          "time": "17:30 h"
+        }
+      },
+      "departure_location": {
+        "label": "Abreiseort:",
+        "home": {
+          "label": "Wohnung",
+          "checked": false
+        },
+        "office": {
+          "label": "Dienststelle",
+          "checked": true
+        }
+      },
+      "daily_return_possible": {
+        "label": "tägliche Rückkehr möglich ?",
+        "yes": {
+          "label": "ja",
+          "checked": false
+        },
+        "no": {
+          "label": "nein",
+          "checked": true
+        }
+      }
+    },
+    "applicant": {
+      "label": "Antragstellerin/Antragsteller (Name, Vorname, Anschrift)",
+      "name_address": {
+        "label": null,
+        "value": "Klabunde, Max, Ingling 68 4784 Schardenberg"
+      },
+      "institution": {
+        "label": "Einrichtung an der Universität Passau",
+        "value": "Professur für Angewandtes Maschinelles Lernen"
+      },
+      "official_phone": {
+        "label": "Tel. dienstlich",
+        "value": "3933"
+      }
+    },
+    "co_travelers": {
+      "label": "Mitreisende (Name, Vorname)",
+      "value": null,
+      "reason_for_multiple_participants": {
+        "label": "Begründung für die Notwendigkeit der Teilnahme mehrerer Personen an der Reise:",
+        "value": null
+      }
+    },
+    "transportation": {
+      "german_rail": {
+        "label": "Deutsche Bahn (Kunden-Nr. 7200266)",
+        "checked": true
+      },
+      "bahncard_business": {
+        "label": "BahnCard Business (mit Kunden-Nr. kombinierbar)",
+        "checked": false
+      },
+      "private_bahncard": {
+        "label": "private BahnCard",
+        "checked": false
+      },
+      "official_car": {
+        "label": "Dienst-Pkw",
+        "checked": false
+      },
+      "carpooling": {
+        "label": "Mitfahrt bei",
+        "checked": false
+        },
+      "flight": {
+        "label": "Flugzeug",
+        "checked": false
+      },
+      "rental_car": {
+        "label": "Mietfahrzeug",
+        "checked": false
+      },
+      "rental_car_reason": {
+        "label": "Begründung:",
+        "value": null
+      },
+      "private_car_no_valid_reason": {
+        "label": "privates Kfz ohne triftigen Grund",
+        "checked": false
+      },
+      "private_car_valid_reason": {
+        "label": "privates Kfz aus folgendem triftigen Grund",
+        "checked": false
+      },
+      "reasons_for_private_car": {
+        "destinations_not_reachable_on_time": {
+          "label": "Reiseziele mit regelmäßig verkehrenden Beförderungsmitteln zeitgerecht nicht erreichbar",
+          "checked": false
+        },
+        "transport_other_travelers": {
+          "label": "Mitnahme von weiteren Dienstreisenden",
+          "checked": false
+        },
+        "transport_heavy_bulky_luggage": {
+          "label": "Mitnahme von mehr als 10 kg oder sperrigem Gepäck",
+          "checked": false
+        },
+        "other_reason": {
+          "label": "Sonstiges:",
+          "checked": false
+        }
+      }
+    },
+    "travel_expenses": {
+      "advance_payment_requested": {
+        "label": "Es wird ein Abschlag in Höhe von beantragt.",
+        "checked": false,
+        "amount": {
+          "label": "€",
+          "value": null
+        }
+      },
+      "waive_travel_expenses": {
+        "label": "Auf Reisekosten wird verzichtet.",
+        "checked": false
+        },
+      "partial_waiver": {
+        "label": "Der Verzicht erfolgt teilweise bei",
+        "checked": false
+      },
+      "funding_by_project": {
+        "label": "Finanzierung zu Lasten des Projektes (ggf. Kostenstelle):",
+        "checked": false,
+        "cost_center": {
+          "label": null,
+          "value": null
+        }
+      },
+      "funding_from_tg73": {
+        "label": "Finanzierung aus TG 73",
+        "checked": true
+      },
+      "reimbursement_by_third_party": {
+        "label": "Reisekosten werden von dritter Seite erstattet:",
+        "checked": false
+        },
+      "reimbursement_details": {
+        "transportation": {
+          "label": "Beförderung",
+          "checked": false
+        },
+        "accommodation": {
+          "label": "Unterkunft",
+          "checked": false
+        },
+        "meals": {
+          "label": "Verpflegung",
+          "checked": false
+        },
+        "partially": {
+          "label": "teilweise",
+          "checked": false
+        },
+        "completely": {
+          "label": "vollständig",
+          "checked": false
+        }
+      },
+      "provided_during_travel": {
+        "label": "Während der Reise werden von Amts wegen unentgeltlich gewährt:",
+        "accommodation": {
+          "label": "Unterkunft",
+          "checked": false
+        },
+        "meals": {
+          "label": "Verpflegung",
+          "checked": false
+        }
+      }
+    },
+    "declaration_of_accuracy": {
+      "label": "Ich versichere die Richtigkeit und Vollständigkeit meiner Angaben. Die Hinweise zum Datenschutz habe ich gelesen.",
+      "checked": true
+    },
+    "declaration_on_official_duty": {
+      "label": "Ich erkläre auf Dienstpflicht: (nur von Professorinnen/Professoren auszufüllen)",
+      "lectures_not_affected": {
+        "label": "Meine Lehrveranstaltungen sind durch die Dienstreise nicht berührt (weder Vertretung, Verlegung noch Ausfall).",
+        "checked": true
+      },
+      "lectures_affected": {
+        "label": "Eine Vertretung/Verlegung meiner Lehrveranstaltungen ist erforderlich. Die Termine wurden der Dekanin/dem Dekan angezeigt.",
+        "checked": false
+      }
+    },
+    "confirmation_of_official_necessity_and_economy": {
+      "label": "Bestätigung der dienstl. Notwendigkeit und Wirtschaftlichkeit",
+      "date_signature_applicant": {
+        "label": "Datum, Unterschrift Antragstellerin/Antragsteller",
+        "value": null
+      },
+      "date_signature_supervisor": {
+        "label": "Datum, Unterschrift Vorgesetzte/Vorgesetzter",
+        "value": null
+      }
+    },
+    "return_to_applicant": {
+      "label": "Zurück an Antragstellerin/Antragsteller",
+      "travel_status": {
+        "not_approved": {
+          "label": "nicht genehmigt",
+          "checked": false
+        },
+        "approval_not_required": {
+          "label": "Genehmigung nicht erforderlich",
+          "checked": false
+        },
+        "approved_as": {
+          "label": "genehmigt als",
+          "checked": true
+        },
+        "approved_transport_method": {
+          "train": {
+            "label": "Bahn",
+            "checked": true
+          },
+          "flight": {
+            "label": "Flugzeug",
+            "checked": false
+          },
+          "private_car_no_reason": {
+            "label": "eigenem Kfz (ohne Vorliegen triftiger Gründe).",
+            "checked": false
+          },
+          "private_car_with_reason": {
+            "label": "eigenem Kfz (triftige Gründe für die Kfz-Benutzung werden anerkannt).",
+            "checked": false
+          },
+          "carpooling": {
+            "label": "Mitfahrt bei",
+            "checked": false
+          },
+          "training_trip": {
+            "label": "Fortbildungsreise",
+            "checked": false
+          },
+          "rental_car": {
+            "label": "Mietfahrzeug",
+            "checked": false
+          },
+          "official_car": {
+            "label": "Dienst-Kfz",
+            "checked": false
+          }
+        }
+      }
+    },
+    "budget_execution": {
+      "booking_office": {
+        "label": "Haushaltsvollzug: Buchungsstelle:",
+        "value": null
+      },
+      "cost_center": {
+        "label": "Kostenstelle:",
+        "value": null
+      }
+    },
+    "signature_section": {
+      "location_date": {
+        "label": "Passau, den",
+        "value": null
+      },
+      "signature_supervisor": {
+        "label": "(Unterschrift des Dienstvorgesetzten)",
+        "value": null
+      }
+    },
+    "data_protection_information": {
+      "label": "Informationen zur Verarbeitung Ihrer Daten und zu Ihren diesbezüglichen Rechten erhalten Sie auf unserer Homepage unter „Beschäftigte - Personal von A bis Z - Dienst- und Fortbildungsreisen - Datenschutzinformationen zu Reisekosten\".",
+      "link": "https://www.kico.bayern/veranstaltungen/veranstaltungskalender/detail/ai-talk-f"
+    }
+  }
+}

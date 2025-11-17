@@ -1,0 +1,401 @@
+{
+  "form_title": "Antrag auf Erstattung der Reisekosten",
+  "document_status": "Stand: 22.10.2024",
+  "date_received": {
+    "label": "Eingegangen am:",
+    "value": ""
+  },
+  "applicant_details": {
+    "name_vorname": {
+      "label": "Antragstellerin/Antragsteller (Name, Vorname)",
+      "value": ""
+    },
+    "strasse_haus_nr": {
+      "label": "Straße, Haus-Nr.",
+      "value": ""
+    },
+    "plz_ort": {
+      "label": "Postleitzahl, Ort",
+      "value": ""
+    },
+    "bank_connection": {
+      "iban": {
+        "label": "Bankverbindung - IBAN",
+        "value": "DExy 1234 1234 1234 1344 22"
+      },
+      "bic": {
+        "label": "BIC",
+        "value": "abc..."
+      }
+    },
+    "non_employee_details": {
+      "label": "Für Reisende ohne Beamten- oder Beschäftigungsverhältnis an der Uni Passau:",
+      "own_household_at_business_location": {
+        "label": "Eigener Hausstand am Geschäftsort",
+        "ja": {
+          "checked": false
+        },
+        "nein": {
+          "checked": true
+        }
+      },
+      "tax_id": {
+        "label": "Steueridentifikationsnummer (Steuer-ID)",
+        "value": ""
+      },
+      "birth_date": {
+        "label": "Geburtsdatum",
+        "value": ""
+      }
+    },
+    "notes": "Hinweis: Die Dienstreisegenehmigung im Original ist immer beizufügen. Reisekosten können nur bei Abrechnung innerhalb von 6 Monaten erstattet werden."
+  },
+  "travel_details": {
+    "anreise": {
+      "label": "I. Anreise",
+      "beginn_datum": {
+        "label": "Beginn der Reise am",
+        "value": "21.4.25."
+      },
+      "beginn_uhrzeit": {
+        "label": "um ... Uhr",
+        "value": "7:00"
+      },
+      "start_location": {
+        "wohnung": {
+          "label": "von der Wohnung",
+          "checked": true
+        },
+        "dienststelle": {
+          "label": "Dienststelle",
+          "checked": false
+        }
+      },
+      "verkehrsmittel": {
+        "label": "Verkehrsmittel",
+        "value": "Bahn, Flugzeug..."
+      },
+      "von": {
+        "label": "von",
+        "value": "Essen"
+      },
+      "nach": {
+        "label": "nach",
+        "value": "Frankfurt. Singapu"
+      }
+    },
+    "aufenthalt": {
+      "label": "II. Aufenthalt am Geschäftsort",
+      "beginn_geschaeft_datum": {
+        "label": "Beginn des Dienstgeschäfts am",
+        "value": "24.4.25"
+      },
+      "beginn_geschaeft_uhrzeit": {
+        "label": "um ... Uhr",
+        "value": "8"
+      },
+      "ende_geschaeft_datum": {
+        "label": "Ende des Dienstgeschäfts am",
+        "value": "28.4.25"
+      },
+      "ende_geschaeft_uhrzeit": {
+        "label": "um ... Uhr",
+        "value": "20"
+      },
+      "fahrkosten_am_geschaeftsort": {
+        "label": "Fahrkosten am Geschäftsort für die gesamte Dauer des Aufenthaltes:",
+        "privat_kfz": {
+          "label": "Privat-Kfz",
+          "checked": false
+        },
+        "other_transport": {
+          "checked": true,
+          "amount_euro": "15,48"
+        }
+      }
+    },
+    "rueckreise": {
+      "label": "III. Rückreise",
+      "beginn_datum": {
+        "label": "Rückreise am",
+        "value": "3.5.25.."
+      },
+      "beginn_uhrzeit": {
+        "label": "um",
+        "value": "22 Uhr.."
+      },
+      "verkehrsmittel": {
+        "label": "Verkehrsmittel",
+        "value": "Flugzeug, Bahn..."
+      },
+      "von": {
+        "label": "von",
+        "value": "Shanghai"
+      },
+      "nach": {
+        "label": "nach",
+        "value": "München, Passau"
+      },
+      "ankunft_location": {
+        "label": "Ankunft an der",
+        "wohnung": {
+          "label": "Wohnung",
+          "checked": true
+        },
+        "dienststelle": {
+          "label": "Dienststelle",
+          "checked": false
+        }
+      },
+      "ankunft_datum": {
+        "label": "am",
+        "value": "4.5.25..."
+      },
+      "ankunft_uhrzeit": {
+        "label": "um ... Uhr",
+        "value": "13:30"
+      }
+    }
+  },
+  "cost_summary_table": {
+    "headers": {
+      "uebernachtungskosten": {
+        "label": "Übernachtungskosten*",
+        "note": "*Bei Überschreitung des Höchstsatzes (im Inland: 90/120/€; Ausland): Erstattung nur mit Begründung!",
+        "columns": {
+          "a": "mit Frühst.",
+          "b": "ohne Frühst."
+        },
+        "unit": "Euro"
+      },
+      "fahrkosten": {
+        "label": "Fahrkosten",
+        "columns": {
+          "a": "Fahrkarten, Flugschein",
+          "b": "Taxi (Erstattung nur mit Begründung)",
+          "c": "Platzkarte",
+          "d": "Sonstiges"
+        },
+        "unit": "Euro"
+      },
+      "wegstreckenentschaedigung": {
+        "label": "Wegstrecken-entschädigung",
+        "columns": {
+          "a": "Pkw aus triftigem Gr.",
+          "b": "Pkw ohne triftigem Gr.",
+          "c": "Zahl der Mitreisenden",
+          "d": "Km je Mitreisendem"
+        },
+        "unit": "Km"
+      },
+      "nebenkosten": {
+        "label": "Nebenkosten",
+        "note": "(Art der Nebenkosten); notwendige Begründungen unter Punkt VI ergänzen",
+        "unit": "Euro"
+      }
+    },
+    "data_rows": [
+      {
+        "uebernachtungskosten_b": "740,18",
+        "fahrkosten_a": "876,77",
+        "nebenkosten": "413,50"
+      },
+      {
+        "uebernachtungskosten_a": "497,83",
+        "note": "(6 Nächte, Frühstück inklusive an drei Tagen)",
+        "nebenkosten": "6,57"
+      },
+      {
+        "fahrkosten_a": "44,99",
+        "nebenkosten": "15,48"
+      },
+      {
+        "fahrkosten_a": "32,00"
+      }
+    ],
+    "summe": {
+      "label": "Summe",
+      "value": ""
+    }
+  },
+  "foreign_travel": {
+    "label": "IV. Auslandsreise",
+    "hinreise": {
+      "label": "Hinreise: Ort, Datum und Uhrzeit der einzelnen Grenzübertritte/Landungen",
+      "value": "Singapur, 22.4.25, 10 Uhr."
+    },
+    "rueckreise": {
+      "label": "Rückreise:",
+      "value": "Shanghai, 29.4.25, 15 Uhr. München, 4.5., 8:30 Uhr"
+    }
+  },
+  "allowances_received": {
+    "label": "V. Zuwendungen (auch bei Verzicht von Tagegeld ausfüllen!)",
+    "fahrkostenerstattung": {
+      "label": "Fahrkostenerstattung",
+      "nein": {
+        "checked": true
+      },
+      "ja": {
+        "checked": false,
+        "amount_label": "in Höhe von",
+        "amount_value": ""
+      },
+      "for_label": "für",
+      "for_value": ""
+    },
+    "kostenlose_uebernachtung": {
+      "label": "kostenlose Übernachtung",
+      "nein": {
+        "checked": true
+      },
+      "ja_amts_wegen": {
+        "checked": false,
+        "label": "ja, von Amts wegen am/vom",
+        "value": ""
+      },
+      "ja_privat": {
+        "checked": false,
+        "label": "ja, privat am/vom",
+        "value": ""
+      }
+    },
+    "unentgeltliche_verpflegung": {
+      "label": "unentgeltliche Verpflegung (bitte immer ausfüllen!)",
+      "fruehstueck": {
+        "nein": {
+          "checked": false
+        },
+        "ja": {
+          "checked": true,
+          "label": "ja, am/vom",
+          "dates": "22.4.,23.4.,26.4."
+        }
+      },
+      "mittag": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      },
+      "abend": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      }
+    },
+    "mahlzeiten_im_flugzeug": {
+      "label": "Mahlzeiten im Flugzeug",
+      "fruehstueck": {
+        "nein": {
+          "checked": false
+        },
+        "ja": {
+          "checked": true,
+          "label": "ja, am/vom",
+          "dates": "22.4.,4.5"
+        }
+      },
+      "mittag": {
+        "nein": {
+          "checked": false
+        },
+        "ja": {
+          "checked": true,
+          "label": "ja, am/vom",
+          "dates": "21.4"
+        }
+      },
+      "abend": {
+        "nein": {
+          "checked": false
+        },
+        "ja": {
+          "checked": true,
+          "label": "ja, am/vom",
+          "dates": "21.4, 3.5"
+        }
+      }
+    },
+    "in_tagungsgebuehr_enthalten": {
+      "label": "in Tagungsgebühr enthalten",
+      "uebernachtung": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      },
+      "fruehstueck": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      },
+      "mittag": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      },
+      "abend": {
+        "nein": {
+          "checked": true
+        },
+        "ja": {
+          "checked": false,
+          "label": "ja, am/vom",
+          "dates": ""
+        }
+      }
+    }
+  },
+  "justifications": {
+    "label": "VI. Begründungen jeglicher Art (gegebenenfalls auf gesondertem Blatt erläutern):",
+    "value": "siehe beigelegtes Blatt"
+  },
+  "advance_payment": {
+    "label": "Ich habe einen Abschlag erhalten:",
+    "nein": {
+      "checked": false
+    },
+    "ja": {
+      "checked": true,
+      "label": "ja, und zwar in Höhe von Euro",
+      "amount_euro": "2200"
+    }
+  },
+  "declaration": {
+    "assurance": "Ich versichere pflichtgemäß die Richtigkeit meiner Angaben. Zahlen Sie bitte auf oben genanntes Konto.",
+    "data_protection_ack": "Die Hinweise zum Datenschutz habe ich gelesen.",
+    "ort_datum": {
+      "label": "Ort, Datum",
+      "value": ""
+    },
+    "unterschrift": {
+      "label": "Unterschrift",
+      "value": ""
+    },
+    "data_protection_info": "Informationen zur Verarbeitung Ihrer Daten und zu Ihren diesbezüglichen Rechten erhalten Sie auf unserer Homepage unter Beschäftigte - Personal von A bis Z - Dienst- und Fortbildungsreisen - Datenschutzinformationen zu Reisekosten\"."
+  }
+}

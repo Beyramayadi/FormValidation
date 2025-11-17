@@ -1,0 +1,468 @@
+{
+  "form_title": "Application for Reimbursement of Travel Expenses",
+  "date_of_form": "22.10.2024",
+  "received_on": null,
+  "applicant_info": {
+    "applicant_name": {
+      "label": "Applicant/Applicant (Name, First Name)",
+      "value": null
+    },
+    "street_house_number": {
+      "label": "Street, House No.",
+      "value": null
+    },
+    "bank_details": {
+      "iban": {
+        "label": "Bank connection - IBAN",
+        "value": "DExy 1234 1234 1234 1344 22"
+      },
+      "bic": {
+        "label": "BIC",
+        "value": null
+      }
+    },
+    "postcode_city": {
+      "label": "Postcode, City",
+      "value": "abc..."
+    },
+    "own_household_at_business_location": {
+      "label": "Own household at business location",
+      "options": [
+        {
+          "label": "yes",
+          "checked": false
+        },
+        {
+          "label": "no",
+          "checked": true
+        }
+      ]
+    }
+  },
+  "for_travelers_without_civil_servant_or_employee_status_at_uni_passau": {
+    "tax_identification_number": {
+      "label": "Tax identification number (Tax ID)",
+      "value": null
+    },
+    "date_of_birth": {
+      "label": "Date of birth",
+      "value": null
+    }
+  },
+  "travel_sections": {
+    "i_outward_journey": {
+      "start_of_journey": {
+        "date": {
+          "label": "on",
+          "value": "21.4.25"
+        },
+        "time": {
+          "label": "at",
+          "value": "7:00"
+        },
+        "location_type": [
+          {
+            "label": "Home",
+            "checked": true
+          },
+          {
+            "label": "Office",
+            "checked": false
+          }
+        ]
+      },
+      "transport_method": {
+        "label": "Means of transport",
+        "value": "Train, Plane..."
+      },
+      "from": {
+        "label": "from",
+        "value": "Essen"
+      },
+      "to": {
+        "label": "to",
+        "value": "Frankfurt, Singapu"
+      }
+    },
+    "ii_stay_at_business_location": {
+      "start_of_business_trip": {
+        "date": {
+          "label": "on",
+          "value": "24.4.25"
+        },
+        "time": {
+          "label": "at",
+          "value": "8"
+        }
+      },
+      "end_of_business_trip": {
+        "date": {
+          "label": "on",
+          "value": "28.4.25"
+        },
+        "time": {
+          "label": "at",
+          "value": "20"
+        }
+      },
+      "travel_costs_at_business_location_for_entire_stay": {
+        "private_car": {
+          "label": "Private car",
+          "checked": false
+        },
+        "amount": {
+          "label": "Euro",
+          "value": "15,48"
+        }
+      }
+    },
+    "iii_return_journey": {
+      "return_journey": {
+        "date": {
+          "label": "on",
+          "value": "3.5.25."
+        },
+        "time": {
+          "label": "at",
+          "value": "22"
+        }
+      },
+      "transport_method": {
+        "label": "Means of transport",
+        "value": "Plane, Train"
+      },
+      "from": {
+        "label": "from",
+        "value": "Shanghai"
+      },
+      "to": {
+        "label": "to",
+        "value": "München, Passau"
+      },
+      "arrival_at": {
+        "location_type": [
+          {
+            "label": "Home",
+            "checked": true
+          },
+          {
+            "label": "Office",
+            "checked": false
+          }
+        ],
+        "date": {
+          "label": "on",
+          "value": "4.5.25"
+        },
+        "time": {
+          "label": "at",
+          "value": "13:30"
+        }
+      }
+    }
+  },
+  "cost_summary": {
+    "accommodation_costs": {
+      "label": "Accommodation costs*",
+      "options": [
+        {
+          "label": "a) with breakfast",
+          "checked": false
+        },
+        {
+          "label": "b) without breakfast",
+          "checked": true
+        }
+      ],
+      "note": "*If the maximum rate is exceeded (inland: 90/120€; abroad): Reimbursement only with justification!",
+      "amount": {
+        "label": "Euro",
+        "value": "740,18"
+      },
+      "nights": {
+        "label": "(6 nights, breakfast included on three days)",
+        "value": null
+      }
+    },
+    "travel_costs": {
+      "a_tickets_flight_ticket": {
+        "label": "a) Tickets, flight ticket",
+        "value": "876,77"
+      },
+      "b_taxi_reimbursement_only_with_justification": {
+        "label": "b) Taxi (Reimbursement only with justification)",
+        "value": "497,83"
+      },
+      "c_seat_reservation_only_with_justification": {
+        "label": "c) Seat reservation only with justification!",
+        "value": "44,99"
+      },
+      "d_other": {
+        "label": "d) Other",
+        "value": "32,00"
+      }
+    },
+    "mileage_allowance": {
+      "a_private_car_for_urgent_reasons": {
+        "label": "a) Private car for urgent reasons",
+        "checked": false
+      },
+      "b_private_car_without_urgent_reasons": {
+        "label": "b) Private car without urgent reasons",
+        "checked": false
+      },
+      "c_number_of_passengers": {
+        "label": "c) Number of passengers",
+        "value": null
+      },
+      "d_km_per_passenger": {
+        "label": "d) Km per passenger",
+        "value": null
+      },
+      "km": {
+        "label": "Km",
+        "value": null
+      }
+    },
+    "incidental_expenses": {
+      "label": "Incidental expenses (Type of incidental expenses); necessary justifications to be added under point VI",
+      "items": [
+        {
+          "description": null,
+          "amount": "413,50"
+        },
+        {
+          "description": null,
+          "amount": "6,57"
+        },
+        {
+          "description": null,
+          "amount": "15,48"
+        }
+      ]
+    },
+    "sum": {
+      "label": "Sum",
+      "value": null
+    }
+  },
+  "iv_international_travel": {
+    "outward_journey": {
+      "label": "Outward journey:",
+      "value": "Singapore, 22.4.25, 10 Uhr."
+    },
+    "return_journey": {
+      "label": "Return journey:",
+      "value": "Shanghai, 29.4.25, 15 Uhr. München, 4.5., 8:30 Uhr"
+    }
+  },
+  "v_benefits_received_also_fill_in_case_of_waiver_of_daily_allowance": {
+    "in_connection_with_this_trip_i_received": {
+      "travel_cost_reimbursement": {
+        "label": "Travel cost reimbursement",
+        "options": [
+          {
+            "label": "no",
+            "checked": true
+          },
+          {
+            "label": "yes, in the amount of",
+            "checked": false
+          }
+        ],
+        "for": {
+          "label": "for",
+          "value": null
+        }
+      },
+      "free_accommodation": {
+        "label": "free accommodation",
+        "options": [
+          {
+            "label": "no",
+            "checked": true
+          },
+          {
+            "label": "yes, officially from/on",
+            "checked": false
+          },
+          {
+            "label": "yes, privately from/on",
+            "checked": false
+          }
+        ]
+      },
+      "free_meals_please_always_fill_in": {
+        "breakfast": {
+          "label": "Breakfast",
+          "options": [
+            {
+              "label": "no",
+              "checked": false
+            },
+            {
+              "label": "yes, on/from 22.4.,23.4.,26.4.",
+              "checked": true
+            }
+          ]
+        },
+        "lunch": {
+          "label": "Lunch",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        },
+        "dinner": {
+          "label": "Dinner",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        }
+      },
+      "meals_on_the_plane": {
+        "breakfast": {
+          "label": "Breakfast",
+          "options": [
+            {
+              "label": "no",
+              "checked": false
+            },
+            {
+              "label": "yes, on/from 22.4.,4.5",
+              "checked": true
+            }
+          ]
+        },
+        "lunch": {
+          "label": "Lunch",
+          "options": [
+            {
+              "label": "no",
+              "checked": false
+            },
+            {
+              "label": "yes, on/from 21.4",
+              "checked": true
+            }
+          ]
+        },
+        "dinner": {
+          "label": "Dinner",
+          "options": [
+            {
+              "label": "no",
+              "checked": false
+            },
+            {
+              "label": "yes, on/from 21.4, 3.5",
+              "checked": true
+            }
+          ]
+        }
+      },
+      "included_in_conference_fee": {
+        "accommodation": {
+          "label": "Accommodation",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        },
+        "breakfast": {
+          "label": "Breakfast",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        },
+        "lunch": {
+          "label": "Lunch",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        },
+        "dinner": {
+          "label": "Dinner",
+          "options": [
+            {
+              "label": "no",
+              "checked": true
+            },
+            {
+              "label": "yes, on/from",
+              "checked": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "vi_justifications_of_any_kind_if_applicable_explain_on_a_separate_sheet": {
+    "justification_text": {
+      "label": "Justification text",
+      "value": "see attached sheet"
+    }
+  },
+  "declaration": {
+    "i_received_an_advance_payment": {
+      "options": [
+        {
+          "label": "no",
+          "checked": true
+        },
+        {
+          "label": "yes, and in the amount of Euro 2200",
+          "checked": false
+        }
+      ]
+    },
+    "assurance": {
+      "label": "I hereby conscientiously assure the correctness of my information. Please pay the above-mentioned account. I have read the data protection information.",
+      "value": null
+    },
+    "place_date": {
+      "label": "Place, Date",
+      "value": null
+    },
+    "signature": {
+      "label": "Signature",
+      "value": null
+    }
+  },
+  "information_on_data_processing": {
+    "text": "Information on the processing of your data and your rights in this regard can be found on our homepage under \"Employees - Personnel from A to Z - Business and Training Trips - Data Protection Information on Travel Expenses\"."
+  }
+}
