@@ -29,6 +29,8 @@ class FieldType(Enum):
     PHONE = "phone"
     DROPDOWN = "dropdown"
     SIGNATURE = "signature"
+    CURRENCY = "currency"
+    IBAN = "iban"
 
 
 class ValidationStatus(Enum):
@@ -66,6 +68,27 @@ class FieldValidator:
     Validates and cross-checks form field extractions from multiple sources.
     """
     
+    # Field label synonyms for normalization
+    FIELD_SYNONYMS = {
+        'first_name': ['first name', 'vorname', 'given name', 'firstname', 'prenom'],
+        'last_name': ['last name', 'surname', 'nachname', 'family name', 'lastname', 'nom'],
+        'full_name': ['name', 'full name', 'vollständiger name', 'complete name'],
+        'date_of_birth': ['dob', 'birth date', 'date of birth', 'geburtsdatum', 'birthdate', 'date de naissance'],
+        'email': ['email', 'e-mail', 'email address', 'e-mail-adresse', 'courriel'],
+        'phone': ['phone', 'telephone', 'telefon', 'phone number', 'tel', 'mobile'],
+        'address': ['address', 'adresse', 'street address', 'straße'],
+        'city': ['city', 'stadt', 'town', 'ville'],
+        'postal_code': ['postal code', 'zip', 'zip code', 'postleitzahl', 'plz', 'code postal'],
+        'country': ['country', 'land', 'pays', 'nation'],
+        'arrival_date': ['arrival', 'check-in', 'arrival date', 'date of arrival', 'anreise', 'anreisedatum'],
+        'departure_date': ['departure', 'check-out', 'departure date', 'date of departure', 'abreise', 'abreisedatum'],
+        'nights': ['nights', 'number of nights', 'stay nights', 'anzahl nächte', 'nächte'],
+        'price_per_night': ['price per night', 'nightly rate', 'rate per night', 'preis pro nacht'],
+        'total_cost': ['total', 'total cost', 'total price', 'sum', 'gesamtpreis', 'total amount'],
+        'hotel_name': ['hotel', 'hotel name', 'hotelname', 'accommodation'],
+        'room_type': ['room type', 'zimmertyp', 'room category', 'type de chambre'],
+    }
+    
     def __init__(self, schema: Optional[Dict[str, Any]] = None):
         """
         Initialize the validator.
@@ -77,6 +100,44 @@ class FieldValidator:
         self.schema = schema or {}
         self.validation_threshold = 0.85  # Confidence threshold for auto-validation
         self.conflict_threshold = 0.15  # Max confidence difference to flag as conflict
+    
+    def normalize_field_name(self, field_name: str) -> str:
+        """
+        Normalize field name to canonical form using fuzzy matching and synonyms.
+        
+        Args:
+            field_name: Raw field name from extraction
+            
+        Returns:
+            Normalized canonical field name
+        """
+        if not field_name:
+            return field_name
+            
+        # Clean the field name
+        cleaned = field_name.lower().strip()
+        cleaned = re.sub(r'[_\-\s]+', ' ', cleaned)  # Normalize separators
+        cleaned = re.sub(r'[^\w\s]', '', cleaned)    # Remove special chars
+        
+        # Exact match first
+        for canonical, synonyms in self.FIELD_SYNONYMS.items():
+            if cleaned in [s.lower() for s in synonyms]:
+                return canonical
+        
+        # Fuzzy match with threshold
+        best_match = None
+        best_ratio = 0.0
+        threshold = 0.85
+        
+        for canonical, synonyms in self.FIELD_SYNONYMS.items():
+            for synonym in synonyms:
+                ratio = SequenceMatcher(None, cleaned, synonym.lower()).ratio()
+                if ratio > best_ratio and ratio >= threshold:
+                    best_ratio = ratio
+                    best_match = canonical
+        
+        # Return canonical if found, otherwise return cleaned original
+        return best_match if best_match else field_name
         
     def validate_extraction(self, 
                           pdf_fields: Dict[str, Any],
@@ -112,11 +173,12 @@ class FieldValidator:
                            ocr_text: str,
                            llm_fields: Dict[str, Any],
                            buttons: List[Dict[str, Any]]) -> Dict[str, List[FieldValue]]:
-        """Collect all field values from different sources."""
+        """Collect all field values from different sources with normalized names."""
         all_fields = defaultdict(list)
         
         # From PDF fields
         for name, data in pdf_fields.items():
+            normalized_name = self.normalize_field_name(name)
             if isinstance(data, dict):
                 value = data.get("value")
                 confidence = data.get("confidence", 50) / 100.0
@@ -124,15 +186,16 @@ class FieldValidator:
                 value = data
                 confidence = 0.8  # Default confidence for direct PDF extraction
                 
-            all_fields[name].append(FieldValue(
+            all_fields[normalized_name].append(FieldValue(
                 source="pdf_fields",
                 value=value,
                 confidence=confidence,
-                metadata={"raw_data": data}
+                metadata={"raw_data": data, "original_name": name}
             ))
         
         # From LLM extraction
         for name, data in llm_fields.items():
+            normalized_name = self.normalize_field_name(name)
             if isinstance(data, dict):
                 value = data.get("value")
                 confidence = data.get("confidence", 50) / 100.0
@@ -140,11 +203,11 @@ class FieldValidator:
                 value = data
                 confidence = 0.7  # Default LLM confidence
                 
-            all_fields[name].append(FieldValue(
+            all_fields[normalized_name].append(FieldValue(
                 source="llm_vision",
                 value=value,
                 confidence=confidence,
-                metadata={"raw_data": data}
+                metadata={"raw_data": data, "original_name": name}
             ))
         
         # From buttons
@@ -152,12 +215,13 @@ class FieldValidator:
             if btn.get("is_checked"):
                 name = btn.get("title") or btn.get("name", "")
                 name = name.split('_')[0].split('.')[0]
+                normalized_name = self.normalize_field_name(name)
                 
-                all_fields[name].append(FieldValue(
+                all_fields[normalized_name].append(FieldValue(
                     source="pdf_buttons",
                     value="checked",
                     confidence=0.9,  # High confidence for direct button state
-                    metadata={"button_data": btn}
+                    metadata={"button_data": btn, "original_name": name}
                 ))
         
         return all_fields
@@ -218,27 +282,43 @@ class FieldValidator:
         # Detect from field name patterns
         name_lower = field_name.lower()
         
-        if any(word in name_lower for word in ["check", "box", "yes", "no", "ja", "nein"]):
+        # Checkbox detection - must be whole word matches
+        checkbox_words = ["checkbox", "check_box", "yes_no", "ja_nein"]
+        if any(word in name_lower for word in checkbox_words):
             return FieldType.CHECKBOX
         
-        if any(word in name_lower for word in ["date", "datum", "birth"]):
+        if any(word in name_lower for word in ["date", "datum", "birth", "arrival", "departure", "anreise", "abreise"]):
             return FieldType.DATE
         
         if any(word in name_lower for word in ["email", "mail", "e-mail"]):
             return FieldType.EMAIL
         
-        if any(word in name_lower for word in ["phone", "tel", "fax", "mobile"]):
+        if any(word in name_lower for word in ["phone", "tel", "fax", "mobile", "telefon"]):
             return FieldType.PHONE
         
-        if any(word in name_lower for word in ["number", "nummer", "count", "amount"]):
+        if any(word in name_lower for word in ["iban", "bank_account", "konto"]):
+            return FieldType.IBAN
+        
+        if any(word in name_lower for word in ["price", "cost", "total", "amount", "preis", "betrag", "summe"]):
+            return FieldType.CURRENCY
+        
+        if any(word in name_lower for word in ["number", "nummer", "count", "nights", "nächte"]):
             return FieldType.NUMBER
         
         # Detect from values
         for source in sources:
-            value_str = str(source.value).lower()
+            value_str = str(source.value)
             
-            if value_str in ["checked", "yes", "no", "true", "false", "ja", "nein"]:
+            if value_str.lower() in ["checked", "yes", "no", "true", "false", "ja", "nein"]:
                 return FieldType.CHECKBOX
+            
+            # IBAN pattern (starts with 2 letters, 2 digits)
+            if re.match(r'^[A-Z]{2}\d{2}', value_str.replace(' ', '')):
+                return FieldType.IBAN
+            
+            # Currency pattern (has currency symbol or format)
+            if re.search(r'[€$£¥₹]|\d+[,\.]\d{2}', value_str):
+                return FieldType.CURRENCY
             
             # Date pattern
             if re.match(r'\d{1,2}[./-]\d{1,2}[./-]\d{2,4}', value_str):
@@ -372,9 +452,11 @@ class FieldValidator:
     
     def _validate_against_schema(self, validated_fields: Dict[str, ValidatedField]) -> Dict[str, ValidatedField]:
         """Validate fields against the provided schema."""
-        # Check for missing required fields
+        # Add ALL schema fields, even if they weren't extracted
         for field_name, field_spec in self.schema.items():
-            if field_spec.get("required", False) and field_name not in validated_fields:
+            if field_name not in validated_fields:
+                # Field exists in schema but wasn't extracted
+                is_required = field_spec.get("required", False)
                 validated_fields[field_name] = ValidatedField(
                     name=field_name,
                     field_type=FieldType(field_spec.get("type", "text")),
@@ -382,7 +464,9 @@ class FieldValidator:
                     confidence=0.0,
                     status=ValidationStatus.MISSING,
                     sources=[],
-                    validation_notes=[f"Required field '{field_name}' not found in extraction"]
+                    validation_notes=[
+                        f"{'Required' if is_required else 'Optional'} field '{field_name}' not found in extraction"
+                    ]
                 )
         
         # Check for unexpected fields
@@ -430,6 +514,30 @@ class FieldValidator:
                     f"Potentially invalid phone number: '{value_str}'"
                 )
         
+        elif validated_field.field_type == FieldType.CURRENCY:
+            parsed = self._validate_and_standardize_currency(value_str)
+            if parsed is not None:
+                validated_field.final_value = parsed
+                validated_field.validation_notes.append(
+                    f"Standardized currency: {value_str} → {parsed}"
+                )
+            else:
+                validated_field.validation_notes.append(
+                    f"Invalid currency format: '{value_str}'"
+                )
+                validated_field.status = ValidationStatus.NEEDS_REVIEW
+                validated_field.confidence *= 0.5
+        
+        elif validated_field.field_type == FieldType.IBAN:
+            if not self._validate_iban(value_str):
+                validated_field.validation_notes.append(
+                    f"Invalid IBAN (checksum failed): '{value_str}'"
+                )
+                validated_field.status = ValidationStatus.NEEDS_REVIEW
+                validated_field.confidence *= 0.4
+            else:
+                validated_field.validation_notes.append("IBAN checksum validated")
+        
         elif validated_field.field_type == FieldType.NUMBER:
             try:
                 validated_field.final_value = float(value_str.replace(',', '.'))
@@ -441,43 +549,130 @@ class FieldValidator:
                 validated_field.confidence *= 0.5
     
     def _validate_email(self, email: str) -> bool:
-        """Validate email format."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return bool(re.match(pattern, email))
+        """Validate email format with stricter rules."""
+        # More robust email validation
+        pattern = r'^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$'
+        if not re.match(pattern, email):
+            return False
+        
+        # Additional checks
+        if email.count('@') != 1:
+            return False
+        if '..' in email:  # No consecutive dots
+            return False
+        
+        return True
     
     def _validate_and_standardize_date(self, date_str: str) -> Optional[str]:
-        """Validate and standardize date format to YYYY-MM-DD."""
-        # Common date patterns
+        """Validate and standardize date format to YYYY-MM-DD with better parsing."""
+        from datetime import datetime
+        
+        # Clean the input
+        date_str = date_str.strip()
+        
+        # Common date patterns with validation
         patterns = [
-            (r'(\d{2})[./-](\d{2})[./-](\d{4})', lambda m: f"{m[3]}-{m[2]}-{m[1]}"),  # DD.MM.YYYY
-            (r'(\d{4})[./-](\d{2})[./-](\d{2})', lambda m: f"{m[1]}-{m[2]}-{m[3]}"),  # YYYY-MM-DD
-            (r'(\d{2})[./-](\d{2})[./-](\d{2})', lambda m: f"20{m[3]}-{m[2]}-{m[1]}"),  # DD.MM.YY
+            (r'(\d{2})[./-](\d{2})[./-](\d{4})', '%d-%m-%Y'),  # DD.MM.YYYY
+            (r'(\d{4})[./-](\d{2})[./-](\d{2})', '%Y-%m-%d'),  # YYYY-MM-DD
+            (r'(\d{2})[./-](\d{2})[./-](\d{2})', '%d-%m-%y'),  # DD.MM.YY
+            (r'(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})', '%d %B %Y'),  # DD Month YYYY
         ]
         
-        for pattern, formatter in patterns:
+        for pattern, date_format in patterns:
             match = re.match(pattern, date_str)
             if match:
                 try:
-                    return formatter(match.groups())
-                except:
-                    pass
+                    # Try to parse with datetime to validate
+                    parsed = datetime.strptime(date_str.replace('.', '-').replace('/', '-'), date_format)
+                    # Return in standard format
+                    return parsed.strftime('%Y-%m-%d')
+                except ValueError:
+                    continue
         
         return None
     
     def _validate_and_standardize_phone(self, phone: str) -> str:
-        """Validate and standardize phone number."""
-        # Remove all non-digits
-        digits = re.sub(r'\D', '', phone)
+        """Validate and standardize phone number with country code handling."""
+        # Remove all non-digits except leading +
+        cleaned = phone.strip()
+        has_plus = cleaned.startswith('+')
+        digits = re.sub(r'\D', '', cleaned)
         
         # Basic validation: 10-15 digits
-        if 10 <= len(digits) <= 15:
-            # Format as international if starts with country code
-            if digits.startswith('49'):  # Germany
-                return f"+{digits[:2]} {digits[2:5]} {digits[5:]}"
-            else:
-                return f"+{digits}"
+        if not (10 <= len(digits) <= 15):
+            return phone  # Return original if invalid length
         
-        return phone  # Return original if can't standardize
+        # Format based on country code
+        if digits.startswith('49'):  # Germany
+            if len(digits) >= 11:
+                return f"+49 {digits[2:5]} {digits[5:8]} {digits[8:]}"
+        elif digits.startswith('1') and len(digits) == 11:  # US/Canada
+            return f"+1 {digits[1:4]} {digits[4:7]} {digits[7:]}"
+        elif digits.startswith('33'):  # France
+            if len(digits) >= 11:
+                return f"+33 {digits[2:3]} {digits[3:5]} {digits[5:7]} {digits[7:9]} {digits[9:]}"
+        elif digits.startswith('44'):  # UK
+            if len(digits) >= 11:
+                return f"+44 {digits[2:6]} {digits[6:]}"
+        
+        # Generic international format
+        return f"+{digits}" if not has_plus else phone
+    
+    def _validate_and_standardize_currency(self, value_str: str) -> Optional[float]:
+        """Parse and validate currency values (€, $, £) with thousands separators."""
+        # Remove currency symbols and whitespace
+        cleaned = value_str.strip()
+        cleaned = re.sub(r'[€$£¥₹]', '', cleaned)
+        cleaned = cleaned.strip()
+        
+        # Handle European format: 1.234,56 → 1234.56
+        if ',' in cleaned and '.' in cleaned:
+            if cleaned.rindex(',') > cleaned.rindex('.'):
+                # European format
+                cleaned = cleaned.replace('.', '').replace(',', '.')
+            else:
+                # US format: remove comma thousands separator
+                cleaned = cleaned.replace(',', '')
+        elif ',' in cleaned:
+            # Could be European decimal or US thousands
+            # Check position: if last 3 chars, likely thousands; if last 2, likely decimal
+            comma_pos = cleaned.rindex(',')
+            if len(cleaned) - comma_pos == 3:  # Likely European decimal
+                cleaned = cleaned.replace(',', '.')
+            else:
+                cleaned = cleaned.replace(',', '')
+        
+        try:
+            value = float(cleaned)
+            return value if value >= 0 else None
+        except ValueError:
+            return None
+    
+    def _validate_iban(self, iban: str) -> bool:
+        """Validate IBAN using mod-97 checksum algorithm."""
+        # Remove spaces and convert to uppercase
+        iban = iban.replace(' ', '').upper()
+        
+        # IBAN must be 15-34 alphanumeric characters
+        if not re.match(r'^[A-Z]{2}\d{2}[A-Z0-9]+$', iban) or not (15 <= len(iban) <= 34):
+            return False
+        
+        # Move first 4 characters to end
+        rearranged = iban[4:] + iban[:4]
+        
+        # Replace letters with numbers (A=10, B=11, ..., Z=35)
+        numeric = ''
+        for char in rearranged:
+            if char.isdigit():
+                numeric += char
+            else:
+                numeric += str(ord(char) - ord('A') + 10)
+        
+        # Check if mod 97 == 1
+        try:
+            return int(numeric) % 97 == 1
+        except ValueError:
+            return False
     
     def get_needs_review(self, validated_fields: Dict[str, ValidatedField]) -> List[ValidatedField]:
         """Get all fields that need human review."""

@@ -8,12 +8,13 @@ from PIL import Image
 
 # Try to support pypdf (new name) or PyPDF2 as a fallback
 try:
-    from pypdf import PdfReader
+    from pypdf import PdfReader, PdfWriter
 except ImportError:
     try:
-        from PyPDF2 import PdfReader
+        from PyPDF2 import PdfReader, PdfWriter
     except ImportError:
         PdfReader = None
+        PdfWriter = None
 
 class PDFProcessor:
     def __init__(self, pdf_bytes: bytes):
@@ -294,12 +295,6 @@ class PDFProcessor:
                 from field_validator import FieldValidator
                 from form_schemas import SchemaManager
                 
-                # Get or detect schema
-                if schema is None:
-                    schema_mgr = SchemaManager()
-                    schema_name = schema_mgr.detect_schema(list(fields.keys()))
-                    schema = schema_mgr.get_schema(schema_name)
-                
                 # Extract text for validation
                 ocr_text = self.extract_text()
                 
@@ -316,6 +311,24 @@ class PDFProcessor:
                             error_message = llm_error
                     except Exception as e:
                         error_message = f"Error in LLM processing: {str(e)}"
+                
+                # Get or create schema to ensure ALL fields are shown
+                if schema is None:
+                    schema_mgr = SchemaManager()
+                    # Collect all field names from all sources
+                    all_field_names = set(fields.keys())
+                    all_field_names.update(llm_fields.keys())
+                    all_field_names.update([btn.get('name', '') for btn in buttons if btn.get('name')])
+                    
+                    # Try to detect a predefined schema
+                    schema_name = schema_mgr.detect_schema(list(all_field_names))
+                    schema = schema_mgr.get_schema(schema_name)
+                    
+                    # If generic schema, create dynamic schema from all detected fields
+                    if schema_name == "generic":
+                        # Merge all fields for schema creation
+                        all_fields = {**fields, **llm_fields}
+                        schema = schema_mgr.create_schema_from_fields(all_fields)
                 
                 # Validate all fields
                 validator = FieldValidator(schema=schema)
@@ -409,3 +422,38 @@ class PDFProcessor:
             return bool(self.reader.trailer["/Root"]["/AcroForm"].get("/XFA"))
         except Exception:
             return False
+
+    def save_with_overrides(self, overrides: Dict[str, Any]) -> Optional[bytes]:
+        """Return a PDF bytes object with form fields updated from overrides.
+
+        This writes values into AcroForm fields when the field names match.
+        If writing fails, returns None so the caller can fall back.
+        """
+        if PdfWriter is None or PdfReader is None:
+            return None
+
+        try:
+            reader = PdfReader(io.BytesIO(self.pdf_bytes))
+            writer = PdfWriter()
+
+            # Copy pages first
+            for page in reader.pages:
+                writer.add_page(page)
+
+            # Build update dict with stringified values
+            updates = {}
+            for k, v in (overrides or {}).items():
+                try:
+                    updates[k] = str(v.get('value') if isinstance(v, dict) else v)
+                except Exception:
+                    updates[k] = str(v)
+
+            # Apply to each page (some viewers need per-page updates)
+            for i, page in enumerate(writer.pages):
+                writer.update_page_form_field_values(page, updates)
+
+            out = io.BytesIO()
+            writer.write(out)
+            return out.getvalue()
+        except Exception:
+            return None

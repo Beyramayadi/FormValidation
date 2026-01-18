@@ -1,0 +1,7 @@
+doc_hash,flag_id,rule,field,severity,type,issue,current_value,user_action,user_value,confidence,timestamp
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0009,transport_type,verkehrsmittel,WARNING,VALIDATION_ERROR,"Unknown transport type: 'Flugzeug, Zug'","Flugzeug, Zug",manual_correct,Zug,1.0,2026-01-12T11:48:06.195377
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0002,required_field,vorname,ERROR,MISSING_FIELD,'vorname' is a required field,None,manual_correct,si rami,1.0,2026-01-18T18:26:24.180222
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0001,required_field,antragsteller,ERROR,MISSING_FIELD,'antragsteller' is a required field,None,manual_correct,Si rami,1.0,2026-01-18T18:34:09.582565
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0001,required_field,antragsteller,ERROR,MISSING_FIELD,'antragsteller' is a required field,None,manual_correct,Si rami,1.0,2026-01-18T18:35:52.701347
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0001,required_field,antragsteller,ERROR,MISSING_FIELD,'antragsteller' is a required field,None,manual_correct,Si rami,1.0,2026-01-18T18:40:02.423275
+1c368663f08b7b0a7dccf8733d5d16d9,flag_0001,required_field,antragsteller,ERROR,MISSING_FIELD,'antragsteller' is a required field,None,manual_correct,si rami,1.0,2026-01-18T18:42:43.849475
