@@ -1,0 +1,41 @@
+{
+  "policy_name": "Richtlinien der Universität Passau über die Gewährung von Reisekostenzuschüssen",
+  "rules": [
+    {
+      "id": "R1",
+      "category": "financial",
+      "description": "Funding is limited to a maximum of 2/3 of the incurred travel costs.",
+      "logic_hint": "requested_amount <= (total_costs * 0.666)"
+    },
+    {
+      "id": "R2",
+      "category": "temporal",
+      "description": "The application must be received by the Graduate Centre BEFORE the trip starts.",
+      "logic_hint": "application_date < travel_start_date"
+    },
+    {
+      "id": "R3",
+      "category": "eligibility",
+      "description": "Only active participation (Lecture, Poster, or contribution) is funded. Passive attendance or courses are excluded.",
+      "logic_hint": "participation_type in ['Poster', 'Lecture', 'Vortrag', 'Active Contribution']"
+    },
+    {
+      "id": "R4",
+      "category": "temporal",
+      "description": "Reimbursement claims must be submitted no later than 6 months after the event.",
+      "logic_hint": "submission_date <= (event_end_date + 180 days)"
+    },
+    {
+      "id": "R5",
+      "category": "eligibility",
+      "description": "Applicant must be a doctoral student, postdoc, habilitation candidate, or junior professor at the University of Passau.",
+      "logic_hint": "applicant_status in ['Doctoral Student', 'Postdoc', 'Habilitation Candidate', 'Junior Professor']"
+    },
+    {
+      "id": "R6",
+      "category": "financial",
+      "description": "The grant is subsidiary; it cannot top up other funding and should only be used if no other funding is available.",
+      "logic_hint": "other_funding_sources == 'None' or declared_subsidiary == True"
+    }
+  ]
+}

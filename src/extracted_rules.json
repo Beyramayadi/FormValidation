@@ -1,0 +1,41 @@
+{
+  "policy_name": "Richtlinien der Universität Passau über die Gewährung von Reisekostenzuschüssen",
+  "rules": [
+    {
+      "id": "R1",
+      "category": "financial",
+      "description": "Maximum 2/3 of the incurred costs can be covered.",
+      "logic_hint": "requested_amount <= total_cost * 0.66"
+    },
+    {
+      "id": "R2",
+      "category": "eligibility",
+      "description": "PhD students, postdocs, and junior professors of the University of Passau are eligible.",
+      "logic_hint": "applicant_type IN ('PhD student', 'Postdoc', 'Junior Professor') AND applicant_affiliation = 'University of Passau'"
+    },
+    {
+      "id": "R3",
+      "category": "eligibility",
+      "description": "Active participation in a scientific event with an independent scientific contribution is required.",
+      "logic_hint": "event_type = 'scientific' AND contribution_type = 'independent'"
+    },
+    {
+      "id": "R4",
+      "category": "eligibility",
+      "description": "Participation in courses, seminars, colloquia, or organizational functions is not funded.",
+      "logic_hint": "event_type NOT IN ('course', 'seminar', 'colloquium', 'organizational function')"
+    },
+    {
+      "id": "R5",
+      "category": "temporal",
+      "description": "Applications must be submitted before the trip.",
+      "logic_hint": "application_date < travel_start_date"
+    },
+    {
+      "id": "R6",
+      "category": "temporal",
+      "description": "The expense report must be submitted within six months of the event.",
+      "logic_hint": "expense_report_date <= travel_end_date + 180 days"
+    }
+  ]
+}
